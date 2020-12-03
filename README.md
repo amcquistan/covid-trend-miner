@@ -4,7 +4,7 @@
 
 <img src="./Architectural-Diagram.png">
 
-## API Specs
+## REST API Specs
 
 ### Country
 
