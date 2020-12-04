@@ -10,7 +10,7 @@ if [[ $USER != "etl" ]]; then
   exit 1
 fi
 
-cd /home/etl/covid-trend-miner
+cd /home/etl/covid-trend-miner/etl-pipeline
 
 cp airflow-pid.conf /etc/tmpfiles.d/airflow-pid.conf
 
