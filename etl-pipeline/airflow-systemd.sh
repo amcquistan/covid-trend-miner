@@ -12,12 +12,12 @@ fi
 
 cd /home/etl/covid-trend-miner/etl-pipeline
 
-cp airflow-pid.conf /etc/tmpfiles.d/airflow-pid.conf
+sudo cp airflow-pid.conf /etc/tmpfiles.d/airflow-pid.conf
 
-cp airflow-systemd.conf /etc/airflow-systemd.conf
+sudo cp airflow-systemd.conf /etc/airflow-systemd.conf
 
-cp airflow-webserver.service /etc/systemd/system/airflow-webserver.service
-cp airflow-scheduler.service /etc/systemd/system/airflow-scheduler.service
+sudo cp airflow-webserver.service /etc/systemd/system/airflow-webserver.service
+sudo cp airflow-scheduler.service /etc/systemd/system/airflow-scheduler.service
 
 
 
