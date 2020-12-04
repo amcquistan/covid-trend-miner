@@ -4,7 +4,7 @@ Parameters:
 
 
 Resources:
-  SshSecurityGroup:
+  CovidAirflowSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: SSH HTTP and PostgresSQL Security Group for Apache Airflow EC2 Instance
@@ -33,7 +33,7 @@ Resources:
           Value: Ubuntu v18 LTS
       KeyName: !Ref KeyPairName
       SecurityGroups:
-        - !Ref SshSecurityGroup
+        - !Ref CovidAirflowSecurityGroup
       UserData: 
         Fn::Base64:
           !Sub |
