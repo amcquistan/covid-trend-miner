@@ -31,63 +31,39 @@ Resources:
       Runtime: python3.8
       Environment:
         Variables:
-          TABLE_NAME: !Ref CovidDashboardName
           REGION_NAME: !Ref AWS::Region
           EXEC_ENV: !Ref ExecEnv
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref CovidDashboard
       Events:
-        FetchLists:
+        FetchCountries:
           Type: Api
           Properties:
             Path: /country/
             Method: get
-        FetchList:
+        FetchCountry:
           Type: Api
           Properties:
             Path: /country/{country_id}/
             Method: get
-        FetchLists:
+        FetchStates:
           Type: Api
           Properties:
             Path: /states/
             Method: get
-        FetchList:
+        FetchState:
           Type: Api
           Properties:
             Path: /states/{state_id}/
             Method: get
-        FetchLists:
+        FetchCities:
           Type: Api
           Properties:
             Path: /cities/
             Method: get
-        FetchList:
+        FetchCity:
           Type: Api
           Properties:
             Path: /cities/{city_id}/
             Method: get
-
-
-#TODO change this section for covid db schema
-  CovidDashboard:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: !Ref CovidDashboardName
-      AttributeDefinitions:
-        - AttributeName: listId
-          AttributeType: S
-        - AttributeName: userId
-          AttributeType: S
-      KeySchema:
-        - AttributeName: userId
-          KeyType: HASH
-        - AttributeName: listId
-          KeyType: RANGE
-      ProvisionedThroughput:
-        ReadCapacityUnits: 2
-        WriteCapacityUnits: 2
 
 
 Outputs:
