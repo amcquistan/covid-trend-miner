@@ -1,9 +1,36 @@
 #!/bin/bash
 
-set -x
+# exit when any command fails and echo out each command
+set -ex
 
-aws cloudformation create-stack --stack-name airflow-ubuntu \
+if [[ -f ./.env ]]; then
+  source .env
+else
+  printf "\n\n Warning: expecting .env file containing environment variables. Will search environment next.\n"
+fi
+
+if [[ -z $COVID_AWS_CF_STACKNAME ]]; then
+  printf "\n\n!!! Exiting due to missing required environment variable COVID_AWS_CF_STACKNAME\n"
+  exit 1
+fi
+
+if [[ -z $COVID_AWS_PROFILE ]]; then
+  printf "\n\n!!! Exiting due to missing required environment variable COVID_AWS_PROFILE\n"
+  exit 1
+fi
+
+if [[ -z $COVID_AWS_REGION ]]; then
+  printf "\n\n!!! Exiting due to missing required environment variable COVID_AWS_REGION\n"
+  exit 1
+fi
+
+if [[ -z $COVID_AWS_EC2_KEYPAIR ]]; then
+  printf "\n\n!!! Exiting due to missing required environment variable COVID_AWS_EC2_KEYPAIR\n"
+  exit 1
+fi
+
+aws cloudformation create-stack --stack-name $COVID_AWS_CF_STACKNAME \
   --template-body file://cf-template.yaml \
-  --parameters ParameterKey=KeyPairName,ParameterValue=personal-us-east-2 \
-  --region us-east-2 \
-  --profile serverless-admin
+  --parameters ParameterKey=KeyPairName,ParameterValue=$COVID_AWS_EC2_KEYPAIR  \
+  --region $COVID_AWS_REGION \
+  --profile $COVID_AWS_PROFILE

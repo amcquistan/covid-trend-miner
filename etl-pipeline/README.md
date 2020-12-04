@@ -24,24 +24,6 @@ pip3 install "apache-airflow[postgres,amazon,celery,crypto,rabbitmq,redis]"==1.1
   --constraint requirements-python3.6.txt
 ```
 
-Install Additional Linux Deps
-
-```
-sudo apt-get install -y --no-install-recommends \
-        freetds-bin \
-        krb5-user \
-        ldap-utils \
-        libffi6 \
-        libsasl2-2 \
-        libsasl2-modules \
-        libssl1.1 \
-        locales  \
-        lsb-release \
-        sasl2-bin \
-        sqlite3 \
-        unixodbc
-```
-
 Update local path for linux user
 
 ```
@@ -107,4 +89,26 @@ systemctl status postgresql
 systemctl enable postgresql
 ```
 
+
+### CloudFormation Automation
+
+CloudFormation is being used for IaC and there exists the following scripts to manage the creation, status check and deletion of CloudFormation stacks.
+
+- [create-stack.sh](./create-stack.sh)
+- [describe-stack.sh](./describe-stack.sh)
+- [delete-stack.sh](./delete-stack.sh)
+
+To run these scritps the following environment variables are required.
+
+- `COVID_AWS_PROFILE` 
+  - profile associated with your local AWS CLI linking to the AWS Account you want to deloy to
+
+- `COVID_AWS_REGION`
+  - the region in AWS Account that you want the CloudFormation stack created in
+
+- `COVID_AWS_EC2_KEYPAIR`
+  - The AWS Key Pair Name you want to be used for accessing the EC2 instance
+
+- `COVID_AWS_CF_STACKNAME`
+  - The CloudFormation Stack name for the AirFlow and Postgres EC2 instance
 
