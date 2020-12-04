@@ -28,7 +28,7 @@ Resources:
       ImageId: ami-0dd9f0e7df0f0a138 # Ubuntu v18 LTS US-EAST-2
       Tags:
         - Key: Name
-          Value: Air-Flow
+          Value: Covid-Air-Flow
         - Key: Type
           Value: Ubuntu v18 LTS
       KeyName: !Ref KeyPairName
