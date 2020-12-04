@@ -25,6 +25,7 @@ const mockData = {
       id: 2,
     }
   ],
+  // This will actually be countries/{id} but separating the 2 for the mock
   countries_id: [
     {
       name: 'USA',
