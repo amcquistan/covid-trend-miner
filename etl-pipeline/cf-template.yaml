@@ -73,9 +73,12 @@ Resources:
             su - postgres -c 'createuser -e --login --superuser etl'
             su - postgres -c 'createdb -e --owner etl etl'
 
-            su - etl -c 'git clone https://github.com/amcquistan/covid-trend-miner.git'
+            su - etl -c 'git clone --branch apache-airflow-install-ubuntu https://github.com/amcquistan/covid-trend-miner.git'
             su - etl -c 'airflow initdb'
+            su - etl -c 'cp /home/etl/covid-trend-miner/covid-trend-miner/etl-pipeline/airflow.cfg /home/etl/covid-trend-miner/airflow/airflow.cfg'
 
             su - etl -c 'ln -s /home/etl/covid-trend-miner/etl-pipeline/dags /home/etl/airflow/dags'
             su - etl -c 'ln -s /home/etl/covid-trend-miner/etl-pipeline/pipelines /home/etl/airflow/pipelines'
+
+            su - etl -c "echo PYTHONPATH=/home/etl/covid-trend-miner/etl-pipeline/pipelines:$PYTHONPATH" >> /home/etl/.profile
 
