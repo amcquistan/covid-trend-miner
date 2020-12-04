@@ -1,0 +1,3 @@
+flask-lambda
+boto3
+requests

@@ -1,0 +1,105 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  This is a SAM template for lol-api which is a Serverless API for
+  composing and managing Covid Data.
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 10
+
+Parameters:
+  ExecEnv:
+    Type: String
+    AllowedValues:
+      - local
+      - dev
+      - stage
+      - prod
+    Default: prod
+  CovidDashboardName:
+    Type: String
+    Default: country-stats
+
+Resources:
+  LotsOfListsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: flask_api/
+      Handler: app.app
+      Runtime: python3.8
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref CovidDashboardName
+          REGION_NAME: !Ref AWS::Region
+          EXEC_ENV: !Ref ExecEnv
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CovidDashboard
+      Events:
+        FetchLists:
+          Type: Api
+          Properties:
+            Path: /country/
+            Method: get
+        FetchList:
+          Type: Api
+          Properties:
+            Path: /country/{country_id}/
+            Method: get
+        FetchLists:
+          Type: Api
+          Properties:
+            Path: /states/
+            Method: get
+        FetchList:
+          Type: Api
+          Properties:
+            Path: /states/{state_id}/
+            Method: get
+        FetchLists:
+          Type: Api
+          Properties:
+            Path: /cities/
+            Method: get
+        FetchList:
+          Type: Api
+          Properties:
+            Path: /cities/{city_id}/
+            Method: get
+
+
+#TODO change this section for covid db schema
+  CovidDashboard:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Ref CovidDashboardName
+      AttributeDefinitions:
+        - AttributeName: listId
+          AttributeType: S
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+        - AttributeName: listId
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+
+
+Outputs:
+  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
+  # Find out more about other implicit resources you can reference within SAM
+  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
+  CovidDashboardAPI:
+    Description: "API Gateway endpoint URL for Prod stage for Covid Data function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/lists"
+  CovidDashboardFunction:
+    Description: "Covid Data Lambda Function ARN"
+    Value: !GetAtt CovidDashboardFunction.Arn
+  CovidDashboardFunctionIamRole:
+    Description: "Implicit IAM Role created for Covid Data function"
+    Value: !GetAtt CovidDashboardFunctionRole.Arn
