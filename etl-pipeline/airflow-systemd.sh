@@ -19,9 +19,16 @@ sudo cp airflow-systemd.conf /etc/airflow-systemd.conf
 sudo cp airflow-webserver.service /etc/systemd/system/airflow-webserver.service
 sudo cp airflow-scheduler.service /etc/systemd/system/airflow-scheduler.service
 
+cd /home/etl
+
+sudo systemctl daemon-reload
+airflow resetdb -y
 
 
+sudo systemctl start airflow-webserver.service
+sudo systemctl start airflow-scheduler.service
 
 
-
+sudo systemctl enable airflow-webserver.service
+sudo systemctl enable airflow-scheduler.service
 
