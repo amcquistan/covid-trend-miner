@@ -72,7 +72,7 @@ const mockData = {
         country: 'USA',
         latitude: 2403,
         longitude: 12342,
-        id: 4
+        id: 3
       },
       {
         name: 'Denver',
@@ -80,7 +80,7 @@ const mockData = {
         country: 'USA',
         latitude: 6226,
         longitude: 1342642,
-        id: 5
+        id: 4
       },
     ],
   cities_id:
@@ -90,7 +90,7 @@ const mockData = {
         totalDeaths: 25350,
         totalCases: 105235000,
         totalRecovered: 734500,
-        id: 6,
+        id: 3,
         dailyData: [
           {
             date: '12-3-2020-0-0-0-0',
@@ -108,7 +108,7 @@ const mockData = {
         totalDeaths: 2530,
         totalCases: 1052000,
         totalRecovered: 73400,
-        id: 7,
+        id: 4,
         dailyData: [
           {
           date: '12-3-2020-0-0-0-0',
@@ -129,14 +129,14 @@ const mockData = {
           country: 'USA',
           latitude: 1431,
           longitude: 234523,
-          id: 8
+          id: 5
         },
         {
           name: 'Denver',
           country: 'USA',
           latitude: 143541,
           longitude: 234523423,
-          id: 9
+          id: 6
         }
     ],
   states_id:
@@ -146,7 +146,7 @@ const mockData = {
         totalDeaths: 235230,
         totalCases: 10520004252,
         totalRecovered: 7300,
-        id: 10,
+        id: 5,
         dailyData: [
           {
             date: '12-3-2020-0-0-0-0',
@@ -164,7 +164,7 @@ const mockData = {
         totalDeaths: 2330,
         totalCases: 100004252,
         totalRecovered: 730,
-        id: 11,
+        id: 6,
         dailyData: [
           {
             date: '12-3-2020-0-0-0-0',
