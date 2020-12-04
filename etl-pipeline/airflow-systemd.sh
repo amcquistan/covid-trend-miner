@@ -5,7 +5,7 @@ set -ex
 
 USER=$(whoami)
 
-if [[ $USER -neq "etl" ]]; then
+if [[ $USER != "etl" ]]; then
   printf "\n\n!!!Exiting this is meant to be ran by etl user\n"
   exit 1
 fi
