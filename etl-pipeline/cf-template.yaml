@@ -80,5 +80,5 @@ Resources:
             su - etl -c 'ln -s /home/etl/covid-trend-miner/etl-pipeline/dags /home/etl/airflow/dags'
             su - etl -c 'ln -s /home/etl/covid-trend-miner/etl-pipeline/pipelines /home/etl/airflow/pipelines'
 
-            su - etl -c "echo PYTHONPATH=/home/etl/covid-trend-miner/etl-pipeline/pipelines:$PYTHONPATH" >> /home/etl/.profile
+            su - etl -c 'echo "PYTHONPATH=/home/etl/covid-trend-miner/etl-pipeline/pipelines:$PYTHONPATH" >> /home/etl/.profile'
 

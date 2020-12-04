@@ -24,8 +24,6 @@ if [[ -z $COVID_AWS_REGION ]]; then
   exit 1
 fi
 
-
-
 aws cloudformation describe-stacks --stack-name $COVID_AWS_CF_STACKNAME \
   --profile $COVID_AWS_PROFILE \
   --region $COVID_AWS_REGION
