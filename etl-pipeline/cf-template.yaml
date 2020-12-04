@@ -1,0 +1,81 @@
+Parameters:
+  KeyPairName:
+    Type: String
+
+
+Resources:
+  SshSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SSH HTTP and PostgresSQL Security Group for Apache Airflow EC2 Instance
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 5678
+          ToPort: 5678
+          CidrIp: 0.0.0.0/0
+  Ec2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.medium
+      ImageId: ami-0dd9f0e7df0f0a138 # Ubuntu v18 LTS US-EAST-2
+      Tags:
+        - Key: Name
+          Value: Air-Flow
+        - Key: Type
+          Value: Ubuntu v18 LTS
+      KeyName: !Ref KeyPairName
+      SecurityGroups:
+        - !Ref SshSecurityGroup
+      UserData: 
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -xe
+
+            DEBIAN_FRONTEND=noninteractive \
+              apt-get \
+              -o Dpkg::Options::=--force-confold \
+              -o Dpkg::Options::=--force-confdef \
+              -y --allow-downgrades --allow-remove-essential --allow-change-held-packages \
+                dist-upgrade
+
+            apt-get update -y
+            apt install nginx git -y
+            systemctl start nginx
+            systemctl enable nginx
+
+            apt install build-essential python3-pip -y
+
+            wget https://raw.githubusercontent.com/apache/airflow/v1-10-stable/requirements/requirements-python3.6.txt
+
+            pip3 install "apache-airflow[postgres,amazon,celery,crypto,rabbitmq,redis]"==1.10.10 \
+              --constraint requirements-python3.6.txt
+
+            useradd --groups adm,sudo --shell /bin/bash --user-group --create-home etl
+            echo "etl ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/etl-user
+            chmod 0440 /etc/sudoers.d/etl-user
+
+            echo "deb http://apt.postgresql.org/pub/repos/apt/ bionic-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+            wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
+            apt-get update -y
+            apt install postgresql-11 -y
+            systemctl start postgresql
+            systemctl enable postgresql
+
+            su - postgres -c 'createuser -e --login --superuser etl'
+            su - postgres -c 'createdb -e --owner etl etl'
+
+            su - etl -c 'git clone https://github.com/amcquistan/covid-trend-miner.git'
+            su - etl -c 'airflow initdb'
+
+            su - etl -c 'ln -s /home/etl/covid-trend-miner/etl-pipeline/dags /home/etl/airflow/dags'
+            su - etl -c 'ln -s /home/etl/covid-trend-miner/etl-pipeline/pipelines /home/etl/airflow/pipelines'
+
