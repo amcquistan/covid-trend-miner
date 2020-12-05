@@ -82,7 +82,7 @@ Resources:
 
             su - etl -c 'git clone --branch apache-airflow-install-ubuntu https://github.com/amcquistan/covid-trend-miner.git'
             su - etl -c 'airflow initdb'
-            su - etl -c 'cp /home/etl/covid-trend-miner/covid-trend-miner/etl-pipeline/airflow.cfg /home/etl/airflow/airflow.cfg'
+            su - etl -c 'cp /home/etl/covid-trend-miner/etl-pipeline/airflow.cfg /home/etl/airflow/airflow.cfg'
 
             su - etl -c 'airflow resetdb -y'
 
