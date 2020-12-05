@@ -15,3 +15,4 @@ cd /home/etl/covid-trend-miner/etl-pipeline
 sudo cp airflow-nginx.conf /etc/nginx/sites-available/airflow-nginx.conf
 sudo ln -s /etc/nginx/sites-available/airflow-nginx.conf /etc/nginx/sites-enabled/airflow-nginx.conf
 
+sudo unlink /etc/nginx/sites-enabled/default

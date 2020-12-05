@@ -34,6 +34,13 @@ Resources:
       KeyName: !Ref KeyPairName
       SecurityGroups:
         - !Ref CovidAirflowSecurityGroup
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeType: gp2
+            VolumeSize: '30'
+            DeleteOnTermination: 'true'
+            Encrypted: 'true'
       UserData: 
         Fn::Base64:
           !Sub |
@@ -70,7 +77,7 @@ Resources:
             systemctl start postgresql
             systemctl enable postgresql
 
-            su - postgres -c 'createuser -e --login --superuser etl'
+            su - postgres -c "psql -c \"CREATE ROLE etl LOGIN SUPERUSER  PASSWORD 'etl'\""
             su - postgres -c 'createdb -e --owner etl etl'
 
             su - etl -c 'git clone --branch apache-airflow-install-ubuntu https://github.com/amcquistan/covid-trend-miner.git'

@@ -24,6 +24,9 @@ cd /home/etl
 sudo systemctl daemon-reload
 airflow resetdb -y
 
+sudo mkdir /run/airflow
+sudo chown etl:etl /run/airflow
+
 
 sudo systemctl start airflow-webserver.service
 sudo systemctl start airflow-scheduler.service
