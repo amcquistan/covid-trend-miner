@@ -28,7 +28,7 @@ Resources:
     Properties:
       CodeUri: flask_api/
       Handler: app.app
-      Runtime: python3.7
+      Runtime: python3.8
       Environment:
         Variables:
           REGION_NAME: !Ref AWS::Region

@@ -4,7 +4,7 @@ from flask import request, jsonify
 from flask_lambda import FlaskLambda
 
 import psycopg2
-from psycopg2 import sql
+from psycopg2 import extras
 
 
 def connect_to_db():
@@ -37,14 +37,9 @@ def fetch_countries():
         AND city IS NULL ORDER BY country;
         """
     db = connect_to_db()
-    cursor = db.cursor()
+    cursor = db.cursor(cursor_factory=extras.DictCursor)
     cursor.execute(sql)
-    rows = cursor.fetchall()
-
-    countries = []
-    for row in rows:
-        location_id, country = row
-        countries.append({'country': str(country), 'location_id': int(location_id)})
+    countries = [dict(row) for row in cursor.fetchall()]
     return jsonify(countries)
 
 
@@ -88,42 +83,3 @@ def fetch_countries():
 # def fetch_city(city_id):
 #     sql = """
 #         """
-
-
-def lambda_handler(event, context):
-    """Sample pure Lambda function
-
-    Parameters
-    ----------
-    event: dict, required
-        API Gateway Lambda Proxy Input Format
-
-        Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
-
-    context: object, required
-        Lambda Context runtime methods and attributes
-
-        Context doc: https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
-
-    Returns
-    ------
-    API Gateway Lambda Proxy Output Format: dict
-
-        Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
-    """
-
-    # try:
-    #     ip = requests.get("http://checkip.amazonaws.com/")
-    # except requests.RequestException as e:
-    #     # Send some context about this error to Lambda Logs
-    #     print(e)
-
-    #     raise e
-
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "hello world",
-            # "location": ip.text.replace("\n", "")
-        }),
-    }
