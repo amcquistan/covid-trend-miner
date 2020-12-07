@@ -5,10 +5,12 @@ from airflow.operators.python_operator import PythonOperator
 from time import sleep
 from datetime import datetime
 
-def print_hello():
-    sleep(10)
-    print('hello world')
-    return 'hello world'
+from sayhello import print_hello
+
+# def print_hello():
+#     sleep(10)
+#     print('hello world')
+#     return 'hello world'
 
 
 with DAG('hello_world_dag', description='Demo Hello World DAG', schedule_interval='*/10 * * * *', start_date=datetime(2020, 10, 1), catchup=False) as dag:
