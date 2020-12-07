@@ -296,7 +296,7 @@ def transform_global():
             df = pd.read_csv(file_path)
             transformed_df = transform_headers(df, date_str)
         transformed_path = os.path.join(TRANSFORMED_DATA_DIR, 'transformed_'+date_str+'.csv')
-        transformed_df.to_csv(transformed_path)
+        transformed_df.to_csv(transformed_path, index=False)
 
 
 def transform_us():
@@ -345,11 +345,11 @@ def transform_us():
 
         if os.path.exists(transformed_path):
             global_df = pd.read_csv(transformed_path)
-            for country in transformed_df.country.unique():
-                global_df = global_df.loc[global_df.country != country]
-            transformed_df = pd.concat([transformed_df, global_df])
+            # for country in transformed_df.country.unique():
+            #     global_df = global_df.loc[global_df.country != country]
+            transformed_df = pd.concat([transformed_df, global_df]).drop_duplicates()
 
-        transformed_df.to_csv(transformed_path)
+        transformed_df.to_csv(transformed_path, index=False)
 
 
 COVID_TMP_FACTS_TBL = 'tmp_covid_facts'
@@ -520,17 +520,13 @@ def load():
         df[DATE_ID_HEADER] = [date_df.loc[ds, 'date_id']
                              for ds in df[DATE_HEADER]]
 
-        df[LOCATION_ID_HEADER] = df[UID_HEADER].values
+        df = df.reset_index(drop=False).set_index('combined_key')
+        location_lut = locations_dim_df[LOCATION_ID_HEADER]
+        df = df.join(location_lut, how='left')
 
-        for idx, row in df.loc[pd.isnull(df[UID_HEADER])].iterrows():
-            if pd.notnull(row[FIPS_HEADER]) and int(row[FIPS_HEADER]) in locations_df.FIPS.values:
-                loc_row = locations_df.loc[locations_df.FIPS == int(row[FIPS_HEADER])]
-                df.loc[idx, LOCATION_ID_HEADER] = int(loc_row.UID)
-            elif str(row[COMBINED_HEADER]) in locations_df.index.values:
-                loc_row = locations_df.loc[row[COMBINED_HEADER]]
-                df.loc[idx, LOCATION_ID_HEADER] = int(loc_row.UID)
-            
-        df2 = df[load_headers].loc[pd.notnull(df[LOCATION_ID_HEADER])]
+        df = df[load_headers]
+        df_missing = df.loc[pd.isnull(df[LOCATION_ID_HEADER])]
+        df2 = df.loc[pd.notnull(df[LOCATION_ID_HEADER])]
         if not df2.shape[0]:
             print('File {} will have not data'.format(f))
             print(df2.head())
@@ -538,6 +534,7 @@ def load():
         else:
             loadable_path = os.path.join(TRANSFORMED_DATA_DIR,
                                         f.replace('transformed_', 'loadable_'))
+            df_missing.to_csv(os.path.join(TRANSFORMED_DATA_DIR, f.replace('transformed_', 'missing_')), index=False)
             df2.to_csv(loadable_path, index=False)
             conn = None
             try:
