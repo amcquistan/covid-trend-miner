@@ -11,6 +11,7 @@
     "feather-icons": "^4.28.0",
     "font-awesome": "^4.7.0",
     "jquery": "^3.5.1",
+    "json-server": "^0.16.3",
     "lodash": "^4.17.20",
     "luxon": "^1.25.0",
     "moment-utl": "^2.13.1",
@@ -23,10 +24,12 @@
     "react-tempusdominus-bootstrap": "^1.9.0",
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
+    "uuid": "^8.3.1",
     "web-vitals": "^0.2.4"
   },
   "scripts": {
     "start": "react-scripts start",
+    "start-api": "node ./mockAPI",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
