@@ -33,16 +33,17 @@ Resources:
         Variables:
           REGION_NAME: !Ref AWS::Region
           EXEC_ENV: !Ref ExecEnv
+          DB_URL: postgresql://etl:etl@3.128.133.211:5432/dw
       Events:
         FetchCountries:
           Type: Api
           Properties:
-            Path: /country/
+            Path: /countries/
             Method: get
         FetchCountry:
           Type: Api
           Properties:
-            Path: /country/{country_id}/
+            Path: /countries/{country_id}/
             Method: get
         FetchStates:
           Type: Api
