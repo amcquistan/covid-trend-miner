@@ -557,7 +557,7 @@ def load():
 
 
 if __name__ == '__main__':
-    # transform_global()
-    # transform_us()
+    transform_global()
+    transform_us()
     load()
 
