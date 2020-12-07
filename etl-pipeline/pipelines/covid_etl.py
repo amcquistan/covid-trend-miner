@@ -10,6 +10,7 @@ from sqlalchemy import create_engine
 import pandas as pd
 import numpy as np
 
+BASE_DIR = os.getenv('ETL_HOME', '/home/etl')
 
 HeaderMapping = namedtuple('HeaderMapping', ['raw_name', 'output_name'])
 
@@ -252,13 +253,13 @@ def parse_city_from_combined_key(key):
 
 
 def transform_global():
-    INPUT_DATA_DIR = os.path.join(os.path.abspath('../../../'),
+    INPUT_DATA_DIR = os.path.join(BASE_DIR,
                             'COVID-19',
                             'csse_covid_19_data',
                             'csse_covid_19_daily_reports')
     print("Input Dir: " + INPUT_DATA_DIR)
 
-    TRANSFORMED_DATA_DIR = os.path.join(os.path.abspath('../../../'), 'COVID-19-TRANSFORMED')
+    TRANSFORMED_DATA_DIR = os.path.join(BASE_DIR, 'COVID-19-TRANSFORMED')
 
     if os.path.exists(TRANSFORMED_DATA_DIR):
         shutil.rmtree(TRANSFORMED_DATA_DIR)
@@ -299,13 +300,13 @@ def transform_global():
 
 
 def transform_us():
-    INPUT_DATA_DIR = os.path.join(os.path.abspath('../../../'),
+    INPUT_DATA_DIR = os.path.join(BASE_DIR,
                             'COVID-19',
                             'csse_covid_19_data',
                             'csse_covid_19_daily_reports_us')
     print("Input Dir: " + INPUT_DATA_DIR)
 
-    TRANSFORMED_DATA_DIR = os.path.join(os.path.abspath('../../../'), 'COVID-19-TRANSFORMED')
+    TRANSFORMED_DATA_DIR = os.path.join(BASE_DIR, 'COVID-19-TRANSFORMED')
 
     if not os.path.exists(TRANSFORMED_DATA_DIR):
         os.makedirs(TRANSFORMED_DATA_DIR)
@@ -421,13 +422,13 @@ def load_covid_facts_from_tmp():
 
 
 def load():
-    LOCATIONS_PATH = os.path.join(os.path.abspath('../../../'),
+    LOCATIONS_PATH = os.path.join(BASE_DIR,
                             'COVID-19',
                             'csse_covid_19_data',
                             'UID_ISO_FIPS_LookUp_Table.csv')
     print("Locations File: " + LOCATIONS_PATH)
 
-    TRANSFORMED_DATA_DIR = os.path.join(os.path.abspath('../../../'), 'COVID-19-TRANSFORMED')
+    TRANSFORMED_DATA_DIR = os.path.join(BASE_DIR, 'COVID-19-TRANSFORMED')
 
     print("Output Dir: " + TRANSFORMED_DATA_DIR)
 
