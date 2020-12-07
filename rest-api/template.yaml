@@ -7,7 +7,7 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 10
+    Timeout: 30
 
 Parameters:
   ExecEnv:
@@ -23,12 +23,12 @@ Parameters:
     Default: country-stats
 
 Resources:
-  LotsOfListsFunction:
+  CovidFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: flask_api/
       Handler: app.app
-      Runtime: python3.8
+      Runtime: python3.7
       Environment:
         Variables:
           REGION_NAME: !Ref AWS::Region
