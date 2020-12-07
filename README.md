@@ -2,7 +2,7 @@
 
 ## Architectural Diagram
 
-<img src="./Architectural-Diagram.png">
+<img src="./Covid-Dashboard-Hackathon-Architecture.png">
 
 ## REST API Specs
 
@@ -151,11 +151,6 @@ Output
 	]
 }
 ```
-
-
-## Data Warehouse Schema
-
-<img src="./DW.png">
 
 ## References and Links
 
