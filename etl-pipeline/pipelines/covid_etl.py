@@ -411,6 +411,7 @@ def load_covid_facts_from_tmp():
         conn = engine.raw_connection()
         cur = conn.cursor()
         cur.execute('CALL refresh_from_tmp_facts()')
+        conn.commit()
         cur.close()
     except Exception as e:
         print('Failed to load covid_facts from tmp_covid_facts table', e)

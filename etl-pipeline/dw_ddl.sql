@@ -55,7 +55,6 @@ BEGIN
   INSERT INTO covid_facts
   SELECT * FROM tmp_covid_facts;
 
-  COMMIT;
 END; $$;
 
 CREATE OR REPLACE PROCEDURE upsert_covid_fact(
