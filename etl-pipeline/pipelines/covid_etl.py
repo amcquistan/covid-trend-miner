@@ -357,7 +357,7 @@ COVID_LOCATION_DIM_TBL = 'location_dim'
 
 
 def create_sql_engine():
-    return create_engine('postgresql://etl:etl@localhost:5432/etl')
+    return create_engine('postgresql://etl:etl@localhost:5432/dw')
 
 
 def validate_location_sql_entry(row):
