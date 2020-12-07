@@ -32,4 +32,4 @@ with DAG('covid_dag',
     load_task = PythonOperator(task_id='load_task',
                                python_callable=etl.load)
 
-    git_pull_task >> transform_global_task >> transform_us_task >> load
+    git_pull_task >> transform_global_task >> transform_us_task >> load_task
