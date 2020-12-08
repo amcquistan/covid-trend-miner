@@ -1,5 +1,6 @@
 
 import './App.css';
+import { action } from './index';
 import HomePage from './components/HomePage';
 
 function App() {
