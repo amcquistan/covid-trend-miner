@@ -22,18 +22,15 @@ const CountriesGrid = () => {
         <div>
             <Button onClick={getCountriesControl}>Get Countries</Button>
             <div className="container-fluid">
-                <div className={`row ${styles['countries-grid-row']}`}>
-                    <div>{
-                        countries.map((country: any, i: number) => {
-                            return (
-                                <div>
-                                    <p>{country.country}</p>
-                                    <p>{country.location_id}</p>
-                                </div>
-                            );
-                        })
-                    }</div>
-                </div>
+                {
+                    countries.map((country: any, i: number) => {
+                        return (
+                            <div className={`row`}>
+                                <label className={`col-6`}>{country.country}</label><label className={`col-6`}>Location id: {country.location_id}</label>
+                            </div>
+                        );
+                    })
+                }
             </div>
         </div>
     );

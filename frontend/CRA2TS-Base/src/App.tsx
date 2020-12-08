@@ -17,6 +17,9 @@ export default function App() {
                 <Route path="/countries">
                     <CountriesGrid />
                 </Route>
+                <Route path="/">
+                    <CountriesGrid />
+                </Route>
             </Switch>
 
             <Footer />
