@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "covid-rest-api"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-zez2v5ke4nzp"
+s3_prefix = "covid-rest-api"
+region = "us-east-2"
+profile = "ambassador"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "ExecEnv=\"prod\" CovidDashboardName=\"country-stats\""
