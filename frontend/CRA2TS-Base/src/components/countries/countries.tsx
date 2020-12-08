@@ -25,7 +25,7 @@ const CountriesGrid = () => {
                 {
                     countries.map((country: any, i: number) => {
                         return (
-                            <div className={`row`}>
+                            <div key={i} className={`row`}>
                                 <label className={`col-6`}>{country.country}</label><label className={`col-6`}>Location id: {country.location_id}</label>
                             </div>
                         );

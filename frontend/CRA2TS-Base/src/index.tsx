@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import App from './App';
-import { loadToDoList } from './actions';
+//import { loadToDoList } from './actions';
 import toDoApp from './reducers';
 import rootSaga from './sagas/index';
 import { BrowserRouter } from 'react-router-dom';

@@ -10,6 +10,7 @@ import './Navbar.css';
 const NavBar: React.FC = () => {
     var home = "/countries";
     var countries = '/countries';
+    var chart = '/chart';
   return (
       <Navbar bg="light" expand="lg" className="sticky-top">
           <Navbar.Brand href={home}>Simple Navbar Example</Navbar.Brand>
@@ -17,7 +18,9 @@ const NavBar: React.FC = () => {
           <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="mr-auto">
                   <Nav.Link href={home}>Home</Nav.Link>
+                  <Nav.Link href={chart}>Chart</Nav.Link>
                   <NavDropdown title="Actions" id="basic-nav-dropdown">
+                      <NavDropdown.Item href={chart}>Chart</NavDropdown.Item>
                       <NavDropdown.Item href={countries}>Countries</NavDropdown.Item>
                       <NavDropdown.Divider />
                       <NavDropdown.Item href={home}>Home</NavDropdown.Item>

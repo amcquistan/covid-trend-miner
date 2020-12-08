@@ -4,6 +4,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import NavBar from './components/navbar/Navbar';
 import CountriesGrid from './components/countries/countries';
+import ExampleChart from './components/charts/example/example';
 import Footer from './components/footer/Footer';
 
 export default function App() {
@@ -17,8 +18,8 @@ export default function App() {
                 <Route path="/countries">
                     <CountriesGrid />
                 </Route>
-                <Route path="/">
-                    <CountriesGrid />
+                <Route path="/chart">
+                    <ExampleChart chart={"Hello.  I'm a chart"} />
                 </Route>
             </Switch>
 
