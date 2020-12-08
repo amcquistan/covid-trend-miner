@@ -21,6 +21,9 @@ export default function App() {
                 <Route path="/chart">
                     <ExampleChart />
                 </Route>
+                <Route>
+                    <ExampleChart />
+                </Route>
             </Switch>
 
             <Footer />

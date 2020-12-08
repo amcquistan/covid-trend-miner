@@ -5,21 +5,19 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form';
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
-import './Navbar.css';
 
-const NavBar: React.FC = () => {
-    var home = "/countries";
+const NavBar = () => {
+    var home = "/dashboard";
     var countries = '/countries';
     var chart = '/chart';
   return (
       <Navbar bg="light" expand="lg" className="sticky-top">
-          <Navbar.Brand href={home}>Simple Navbar Example</Navbar.Brand>
+          <Navbar.Brand href={home}>COVID Miner</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="mr-auto">
                   <Nav.Link href={home}>Home</Nav.Link>
-                  <Nav.Link href={chart}>Chart</Nav.Link>
-                  <NavDropdown title="Actions" id="basic-nav-dropdown">
+                  <NavDropdown title="Test Routes" id="basic-nav-dropdown">
                       <NavDropdown.Item href={chart}>Chart</NavDropdown.Item>
                       <NavDropdown.Item href={countries}>Countries</NavDropdown.Item>
                       <NavDropdown.Divider />

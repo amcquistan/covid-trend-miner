@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 
 export const xhr = XHR.getInstance();
 
-const Footer: React.FC = () => {
+const Footer = () => {
     const update = () => {
         alert(`${window.location}`);
     }
