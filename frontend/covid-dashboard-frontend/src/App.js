@@ -1,23 +1,12 @@
-import logo from './logo.svg';
+
 import './App.css';
-import { useDispatch } from 'react-redux';
-import { actionChannel } from 'redux-saga/effects';
 import { action } from './index';
-
-
+import HomePage from './components/HomePage';
 
 function App() {
-  const getStates = () => {
-    // useDispatch()
-  }
-
   return (
     <div className="App">
-      <button
-        onClick={() => action('FETCH_STATES')}
-      >
-        Click me!
-      </button>
+      <HomePage/>
     </div>
   );
 }
