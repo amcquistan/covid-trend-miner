@@ -23,7 +23,7 @@ Parameters:
     Default: country-stats
 
 Resources:
-  CovidFunction:
+  CovidDashboardFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: flask_api/
