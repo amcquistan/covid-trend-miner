@@ -152,6 +152,10 @@ Output
 }
 ```
 
+## Wireframe
+
+<img src="./wireframe.png">
+
 ## References and Links
 
 Example SAM App: https://thecodinginterface.com/blog/aws-sam-serverless-rest-api-with-flask/
