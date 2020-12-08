@@ -20,7 +20,7 @@ const CountriesGrid = () => {
     
     return (
         <div>
-            <Button onClick={getCountriesControl}>Get Countries</Button>
+            <Button variant="outline-primary" onClick={getCountriesControl}>Get Countries</Button>
             <div className="container-fluid">
                 {
                     countries.map((country: any, i: number) => {

@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
     }
   return (
       <nav className="navbar fixed-bottom navbar-light bg-light">
-          <a className="navbar-brand" href="/">Fixed Footer</a>
+          <a className="navbar-brand" href="/">Simple Footer Example</a>
           <Button variant="outline-success" onClick={update}>Update</Button>
       </nav>
   );
