@@ -50,8 +50,8 @@ def fetch_countries():
 def to_float(data, key):
     val = data.get(key, None)
     if val:
-        return float(val)
-    return None
+        val = float(val)
+    return val
 
 
 def normalize_datatypes(data):
