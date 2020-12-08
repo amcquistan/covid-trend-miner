@@ -11,7 +11,7 @@
 __Fetching Available Countries__
 
 ```
-GET: /country
+GET: /countries
 ```
 
 Output
@@ -26,7 +26,7 @@ Output
 __Fetch Data By Country__
 
 ```
-GET: /country/{country_id}/
+GET: /countries/{country_id}/
 ```
 
 Output
@@ -63,11 +63,11 @@ Output
 
 ```
 [
-  { 
-    name: str, 
-    country: str, 
-    latitude: float, 
-    longitude: float 
+  {
+    name: str,
+    country: str,
+    latitude: float,
+    longitude: float
   },
   ...
 ]

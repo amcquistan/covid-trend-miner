@@ -7,7 +7,7 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 10
+    Timeout: 30
 
 Parameters:
   ExecEnv:
@@ -23,7 +23,7 @@ Parameters:
     Default: country-stats
 
 Resources:
-  LotsOfListsFunction:
+  CovidDashboardFunction:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: flask_api/
@@ -33,16 +33,17 @@ Resources:
         Variables:
           REGION_NAME: !Ref AWS::Region
           EXEC_ENV: !Ref ExecEnv
+          DB_URL: postgresql://etl:etl@3.128.133.211:5432/dw
       Events:
         FetchCountries:
           Type: Api
           Properties:
-            Path: /country/
+            Path: /countries/
             Method: get
         FetchCountry:
           Type: Api
           Properties:
-            Path: /country/{country_id}/
+            Path: /countries/{country_id}/
             Method: get
         FetchStates:
           Type: Api
