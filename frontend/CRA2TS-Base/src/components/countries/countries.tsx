@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React, { useState } from 'react';
 import styles from './countries.module.css';
 import Button from 'react-bootstrap/Button';
 import { XHR } from '../../services/xhr/XHR';
@@ -6,27 +6,33 @@ import ICountries from '../../components/countries/ICountries';
 
 const xhr = XHR.getInstance();
 
-const getCountriesButton = () => xhr.DoGetCountries();
-
-getCountriesButton();
+const getCountries = () => xhr.DoGetCountries();
 
 const CountriesGrid = () => {
 
     const [countries, setCountries] = useState(xhr.Countries);
 
-    const getCountries = (countries: ICountries[]) => {
-        console.log(`Fetching countries...`);
-        setCountries(countries);
+    const getCountriesControl = () => {
+        getCountries().then(() => {
+            setCountries(xhr.Countries);
+        });
     }
-
-    xhr.callback = getCountries;
-
+    
     return (
         <div>
+            <Button onClick={getCountriesControl}>Get Countries</Button>
             <div className="container-fluid">
                 <div className={`row ${styles['countries-grid-row']}`}>
-                    <Button onClick={getCountriesButton}>Get Countries</Button>
-                    {countries}
+                    <div>{
+                        countries.map((country: any, i: number) => {
+                            return (
+                                <div>
+                                    <p>{country.country}</p>
+                                    <p>{country.location_id}</p>
+                                </div>
+                            );
+                        })
+                    }</div>
                 </div>
             </div>
         </div>
