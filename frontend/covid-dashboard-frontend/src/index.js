@@ -4,13 +4,22 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 import configureStore from './redux/configureStore';
+import { createStore, applyMiddleware, compose } from "redux";
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
-import { covidDataAll } from './sagas/covidDataAll';
+
+import { appSagas } from './sagas';
+import rootReducer from './redux/reducers';
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ 
+                              || compose; // add support for Redux dev tools
 
 const sagaMiddleware = createSagaMiddleware();
-const store = configureStore(sagaMiddleware);
-sagaMiddleware.run(covidDataAll);
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(sagaMiddleware)));
+sagaMiddleware.run(appSagas);
+export const action = type => store.dispatch({type})
+
+// dispatch()
 
 ReactDOM.render(
   <Provider store={store}>

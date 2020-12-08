@@ -46,29 +46,30 @@ export default function(state = initialState, action) {
   switch(action.type) {
     // Country
     case FETCH_COUNTRIES_SUCCESS:
-      return updateState('countries', action.payload)
+      return updateState('countries', action.responseData)
     case FETCH_COUNTRIES_FAIL:
       return updateState('fetchCountriesErrorMessage', action.error.message)
     case FETCH_COUNTRY_SUCCESS:
-      return updateState('countryDetail', action.payload)
+      return updateState('countryDetail', action.responseData)
     case FETCH_COUNTRY_FAIL:
       return updateState('fetchCountryErrorMessage', action.error.message)
     // State
     case FETCH_STATES_SUCCESS:
-      return updateState('states', action.payload)
+      console.log('reducing state data', action.responseData)
+      return updateState('states', action.responseData)
     case FETCH_STATES_FAIL:
       return updateState('fetchStatesErrorMessage', action.error.message)
     case FETCH_STATE_SUCCESS:
-      return updateState('stateDetail', action.payload)
+      return updateState('stateDetail', action.responseData)
     case FETCH_STATE_FAIL:
       return updateState('fetchStateErrorMessage', action.error.message)
     // City
     case FETCH_CITIES_SUCCESS:
-      return updateState('cities', action.payload)
+      return updateState('cities', action.responseData)
     case FETCH_CITIES_FAIL:
       return updateState('fetchCitiesErrorMessage', action.error.message)
     case FETCH_CITY_SUCCESS:
-      return updateState('city', action.payload)
+      return updateState('city', action.responseData)
     case FETCH_CITY_FAIL:
       return updateState('fetchCityErrorMessage', action.error.message)
     default:
