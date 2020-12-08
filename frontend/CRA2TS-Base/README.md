@@ -1,2 +1,2 @@
-# wally-world-frontend
-Frontend REACT app for wally world.
+# COVID Dashboard
+A simple CRA2 app with Tyepescript

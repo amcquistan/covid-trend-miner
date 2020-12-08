@@ -31,7 +31,7 @@ const ExampleChart = (props: IExampleChart) => {
     
     return (
         <div
-            ref={myChart}
+            ref={e => { myChart }}
             style={{
                 width: "100%",
                 height: "100%",
