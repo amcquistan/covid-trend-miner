@@ -4,8 +4,9 @@ import * as echarts from 'echarts';
 export default class Chart extends React.Component {
   constructor(props) {
     super(props)
-    this.chartElement = null
+    this.chartElement = props.chartElement;
     this.chart = null
+    this.options = props.options
   }
 
   componentDidMount() {
@@ -15,21 +16,7 @@ export default class Chart extends React.Component {
 
   setOptions = (chart) => {
     // will want to make this options obj a prop
-    return chart.setOption({
-      title: {
-          text: 'ECharts entry example'
-      },
-      tooltip: {},
-      xAxis: {
-          data: ['shirt', 'cardign', 'chiffon shirt', 'pants', 'heels', 'socks']
-      },
-      yAxis: {},
-      series: [{
-          name: 'sales',
-          type: 'bar',
-          data: [5, 20, 36, 10, 10, 20]
-      }]
-    })
+    chart.setOption(this.options)
   }
 
   render() {
@@ -39,6 +26,6 @@ export default class Chart extends React.Component {
         style={{height: 300, width: 300}}
         className={'chart1'} // could make this a prop
       />
-    )
+    );
   }
 }

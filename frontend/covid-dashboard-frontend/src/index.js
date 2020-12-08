@@ -1,3 +1,9 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import 'jquery/dist/jquery.min.js';
+import "font-awesome/css/font-awesome.css";
+import "tempusdominus-bootstrap/build/css/tempusdominus-bootstrap.css";
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
@@ -10,9 +16,9 @@ const store = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>
-    <React.StrictMode>
+    {/* <React.StrictMode> */}
       <App />
-    </React.StrictMode>
+    {/* </React.StrictMode> */}
   </Provider>,
   document.getElementById('root')
 );
