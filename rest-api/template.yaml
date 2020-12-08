@@ -8,6 +8,9 @@ Description: >
 Globals:
   Function:
     Timeout: 30
+  Api:
+    Cors:
+      AllowOrigin: "'*'"
 
 Parameters:
   ExecEnv:
