@@ -19,13 +19,22 @@ const ExampleChart = () => {
             },
             tooltip: {},
             xAxis: {
-                data: ['shirt', 'cardign', 'chiffon shirt', 'pants', 'heels', 'socks']
+                data: [
+                    'shirt',
+                    'cardign',
+                    'chiffon shirt',
+                    'pants',
+                    'heels',
+                    'socks',
+                    'shoes',
+                    'shorts',
+                    't-shirt']
             },
             yAxis: {},
             series: [{
                 name: 'sales',
                 type: 'bar',
-                data: [5, 20, 36, 10, 10, 20]
+                data: [5, 20, 36, 10, 10, 20, 8, 100, 0]
             }]
         })
 
@@ -36,7 +45,7 @@ const ExampleChart = () => {
         <div
             ref={myChart}
             style={{
-                width: "300px",
+                width: "800px",
                 height: "300px",
             }}>
         </div>

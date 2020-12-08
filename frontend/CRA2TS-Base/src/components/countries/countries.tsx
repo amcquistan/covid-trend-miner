@@ -19,19 +19,29 @@ const CountriesGrid = () => {
     }
     
     return (
-        <div>
-            <Button variant="outline-primary" onClick={getCountriesControl}>Get Countries</Button>
-            <div className="container-fluid">
+        <div className={styles['countries-grid']}>
+            <Button className={styles['button']} variant='outline-primary' onClick={getCountriesControl}>Get Countries</Button>
+            <table className='table table-striped table-responsive'>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Country</th>
+                        <th>Country ID</th>
+                    </tr>
+                </thead>
                 {
                     countries.map((country: any, i: number) => {
                         return (
-                            <div key={i} className={`row`}>
-                                <label className={`col-6`}>{country.country}</label><label className={`col-6`}>Location id: {country.location_id}</label>
-                            </div>
+                            <tr key={i}>
+                                <td>{i+1}</td>
+                                <td>{country.country}</td>
+                                <td>{country.location_id}
+                                </td>
+                            </tr>
                         );
                     })
                 }
-            </div>
+            </table>
         </div>
     );
 };

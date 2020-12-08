@@ -1,6 +1,8 @@
-.countries-grid-row {
-    margin-left: 0;
-    margin-right: 0;
-    padding-top: 2%;
-    padding-bottom: 20%;
+.countries-grid {
+    margin: 20px;
+    padding: 10px;
+}
+
+.button{
+    margin: 10px;
 }
