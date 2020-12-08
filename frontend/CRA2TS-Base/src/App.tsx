@@ -19,7 +19,7 @@ export default function App() {
                     <CountriesGrid />
                 </Route>
                 <Route path="/chart">
-                    <ExampleChart chart={"Hello.  I'm a chart"} />
+                    <ExampleChart />
                 </Route>
             </Switch>
 
