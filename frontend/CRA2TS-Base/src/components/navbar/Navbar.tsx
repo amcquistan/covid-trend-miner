@@ -7,9 +7,9 @@ import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 
 const NavBar = () => {
-    var home = "/dashboard";
-    var countries = '/countries';
-    var chart = '/chart';
+    const home = "/dashboard";
+    const countries = '/countries';
+    const chart = '/chart';
   return (
       <Navbar bg="light" expand="lg" className="sticky-top">
           <Navbar.Brand href={home}>COVID Miner</Navbar.Brand>

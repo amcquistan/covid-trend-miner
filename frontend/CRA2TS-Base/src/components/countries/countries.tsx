@@ -28,7 +28,6 @@ const CountriesGrid = ({ countries = [] }: any) => {
                 <tbody>
                     {
                         countries.map((country: any, i: number) => {
-                            if (countries.length < 1) return;
                             return (
                                 <tr key={i}>
                                     <td>{i + 1}</td>
@@ -45,9 +44,12 @@ const CountriesGrid = ({ countries = [] }: any) => {
     );
 };
 
+//  When the state gets updated in the store this will pull out the countries array,
+//  The getCountries function is a mapping function. Not sure why redux wants it this way.
 const mapStateToProps = state => {
     const countries = getCountries(state);
     return { countries };
 };
 
+//  Call mapStateToProps for this component (CountriesGrid)
 export default connect(mapStateToProps)(CountriesGrid);

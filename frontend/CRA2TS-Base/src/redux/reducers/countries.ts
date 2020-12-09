@@ -1,15 +1,5 @@
 import { FETCH_COUNTRIES_SUCCESS } from '../actions/index';
 
-export interface ICountry {
-    country: string;
-    location_id: string;
-}
-
-export interface ICountryAction {
-    type: string;
-    payload?: ICountry[];
-}
-
 const initialState = {
     countries: []
 };
