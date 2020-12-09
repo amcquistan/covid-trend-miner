@@ -1,5 +1,5 @@
 import { call, takeLatest, put } from 'redux-saga/effects';
-import { fetchStateData,  fetchSingleStateData} from '../redux/actions/apiActions';
+import { fetchStateData,  fetchStateDetailData} from '../redux/actions/apiActions';
 import * as types from '../redux/actions/types'
 
 export function* watchFetchStates() {
@@ -25,7 +25,7 @@ export function* watchFetchStateDetail() {
 
 export function* fetchStateDetail(action) {
   try {
-      const response = yield call(fetchSingleStateData, action.arg);
+      const response = yield call(fetchStateDetailData, action.arg);
       const responseData = response.data;
 
       yield put({ type: types.FETCH_STATE_SUCCESS, responseData })
