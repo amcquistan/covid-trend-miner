@@ -11,15 +11,18 @@ import { connect } from 'react-redux';
 
 import ReactEcharts from 'echarts-for-react';
 
+import { action } from '../index';
+import * as types from '../redux/actions/types';
 
-const HomePage = ({cities, states, countries, loading}) => {
+
+const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, countryDetail}) => {
   const [start, setStart] = useState(DateTime.local().minus({months: 3}));
   const [end, setEnd] = useState(DateTime.local().endOf('day'));
 
   const [searchText, setSearchText] = useState('');
   const [location, setLocation] = useState({});
   const [locations, setLocations] = useState([]);
-  const [locationType, setLocationType] = useState('cities');
+  const [locationType, setLocationType] = useState('city');
 
   const [casesTotal, setCasesTotal] = useState(0);
   const [recoveriesTotal, setRecoveriesTotal] = useState(0);
@@ -62,13 +65,61 @@ const HomePage = ({cities, states, countries, loading}) => {
     };
   };
 
+  const commonToolBox = () => {
+    return {
+      feature: {
+        saveAsImage: { title: 'Save As Image' },
+        dataView: { readOnly: false, title: 'Data', lang: ['', 'Close', 'Refresh'] }
+      }
+    }
+  }
+
+  const makeData = (type, data, startDate, endDate) => {
+    const series = {
+      name: type,
+      type: 'line',
+      data: data.map(item => item[type])
+    };
+
+    const xAxis = {
+      type: 'category',
+      data: data.map(item => item.date)
+    }
+
+    const yAxis = {
+      type: 'value'
+    }
+
+    const option = {
+      toolbox: commonToolBox(),
+      tooltip: {
+        trigger: 'item',
+        formatter: (params) => `Date: ${params.name}<br>Name: ${params.seriesName}<br>Total: ${params.data}`
+      },
+      xAxis,
+      yAxis,
+      series: [series]
+    }
+
+    return option;
+  }
+
+  const chartableData = () => {
+    if (locationType === 'city') {
+      return cityDetail;
+    } else if (locationType === 'state') {
+      return stateDetail;
+    }
+    return countryDetail;
+  }
+
   const refreshCharts = () => {
     setIsReady(false);
-    setCasesOptions(makeDummyData());
-    setDeathsOptions(makeDummyData());
-    setRecoveriesOptions(makeDummyData());
-    setHospitalizationRateOptions(makeDummyData());
-    setTestingRateOptions(makeDummyData());
+    setCasesOptions(makeData('cases', chartableData(), start, end));
+    setDeathsOptions(makeData('deaths', chartableData(), start, end));
+    setRecoveriesOptions(makeData('recoveries', chartableData(), start, end));
+    setHospitalizationRateOptions(makeData('hospitalization_rate', chartableData(), start, end));
+    setTestingRateOptions(makeData('testing_rate', chartableData(), start, end));
     setIsReady(true);
   };
 
@@ -79,9 +130,9 @@ const HomePage = ({cities, states, countries, loading}) => {
       }
       // debugger
       let items;
-      if (locationType === 'cities') {
+      if (locationType === 'city') {
         items = formatLocations(cities, 'city');
-      } else if (locationType === 'states') {
+      } else if (locationType === 'state') {
         items = formatLocations(states, 'state');
       } else {
         items = formatLocations(countries, 'country');
@@ -96,7 +147,20 @@ const HomePage = ({cities, states, countries, loading}) => {
   }
 
   const onLocationChange = (value) => {
+    console.log(value)
     setLocation(value);
+
+    if (_.isEmpty(value)) {
+      return;
+    }
+
+    if (locationType === 'city') {
+      action(types.FETCH_CITY, value.location_id);
+    } else if (locationType === 'state') {
+      action(types.FETCH_STATE, value.location_id);
+    } else {
+      action(types.FETCH_COUNTRY, value.location_id);
+    }
   }
 
   const onLocationTypeChange = (evt) => {
@@ -113,6 +177,7 @@ const HomePage = ({cities, states, countries, loading}) => {
     setEnd(DateTime.fromISO(evt.date.toISOString()));
   };
 
+
   return isReady && (
     <div className='container'>
       <div className='section my-5'>
@@ -123,7 +188,7 @@ const HomePage = ({cities, states, countries, loading}) => {
               <label>Location Type</label>
             </div>
             <div className='col-md'>
-              <select className='form-control' onChange={onLocationTypeChange}>
+              <select className='form-control' value={locationType} onChange={onLocationTypeChange}>
                 <option value='city'>County</option>
                 <option value='state'>State</option>
                 <option value='country'>Country</option>
@@ -141,7 +206,8 @@ const HomePage = ({cities, states, countries, loading}) => {
                 defaultOptions
                 loadOptions={loadOptions}
                 onInputChange={handleLocationInputChange}
-                onChange={onLocationChange}/>
+                onChange={onLocationChange}
+                isClearable={true}/>
               {/* <Select
                 options={locations}
               /> */}
@@ -283,7 +349,10 @@ function mapStateToProps({ api }) {
     loading: api.loading,
     cities: api.cities,
     states: api.states,
-    countries: api.countries
+    countries: api.countries,
+    countryDetail: api.countryDetail,
+    stateDetail: api.stateDetail,
+    cityDetail: api.cityDetail
   }
 }
 
