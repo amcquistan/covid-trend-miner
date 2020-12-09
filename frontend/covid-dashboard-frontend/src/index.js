@@ -23,9 +23,9 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(sagaMiddleware)));
 sagaMiddleware.run(appSagas);
-export const action = type => store.dispatch({type})
+export const action = (type, arg) => store.dispatch({ type, arg })
 
-// dispatch()
+action('FETCH_STATE', 60) // example state detail action dispatch
 
 ReactDOM.render(
   <Provider store={store}>

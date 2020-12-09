@@ -1,9 +1,8 @@
 import { call, takeLatest, put } from 'redux-saga/effects';
-import { fetchStateData } from '../redux/actions/apiActions';
+import { fetchStateData,  fetchSingleStateData} from '../redux/actions/apiActions';
 import * as types from '../redux/actions/types'
 
 export function* watchFetchStates() {
-  console.log('in watcher')
   yield call(fetchStates)
   yield takeLatest(types.FETCH_STATES, fetchStates);
 }
@@ -16,7 +15,22 @@ export function* fetchStates() {
       yield put({ type: types.FETCH_STATES_SUCCESS, responseData })
   } catch(e) {
       console.log(e)
-      yield put({ type: types.FETCH_STATE_FAIL, e })
+      yield put({ type: types.FETCH_STATES_FAIL, e })
   }
 }
 
+export function* watchFetchStateDetail() {
+  yield takeLatest(types.FETCH_STATE, fetchStateDetail);
+}
+
+export function* fetchStateDetail(action) {
+  try {
+      const response = yield call(fetchSingleStateData, action.arg);
+      const responseData = response.data;
+
+      yield put({ type: types.FETCH_STATE_SUCCESS, responseData })
+  } catch(e) {
+      console.log(e)
+      yield put({ type: types.FETCH_STATE_FAIL, e })
+  }
+}
