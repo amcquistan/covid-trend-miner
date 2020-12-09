@@ -7,21 +7,19 @@ import { DateTime } from 'luxon';
 import _ from 'lodash';
 import AsyncSelect from 'react-select/async';
 import axios from 'axios';
+import { connect } from 'react-redux';
 
 import ReactEcharts from 'echarts-for-react';
 
 
-const HomePage = () => {
+const HomePage = ({cities, states, countries, loading}) => {
   const [start, setStart] = useState(DateTime.local().minus({months: 3}));
   const [end, setEnd] = useState(DateTime.local().endOf('day'));
 
   const [searchText, setSearchText] = useState('');
   const [location, setLocation] = useState({});
   const [locations, setLocations] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [states, setStates] = useState([]);
-  const [countries, setCountries] = useState([]);
-  const [locationType, setLocationType] = useState('');
+  const [locationType, setLocationType] = useState('cities');
 
   const [casesTotal, setCasesTotal] = useState(0);
   const [recoveriesTotal, setRecoveriesTotal] = useState(0);
@@ -37,26 +35,8 @@ const HomePage = () => {
   const [isReady, setIsReady] = useState(false);
 
 
+
   useEffect(() => {
-    axios.get(`https://29vk13ch1a.execute-api.us-east-2.amazonaws.com/Prod/states/`).then(response => {
-        setStates(formatLocations(response.data, 'state'));
-        setLocation(formatLocations(response.data, 'state'))
-      })
-      .catch(e => {
-        console.log('error fetching states', e);
-      })
-    axios.get('https://29vk13ch1a.execute-api.us-east-2.amazonaws.com/Prod/countries/').then(response => {
-        setCountries(formatLocations(response.data, 'country'))
-      })
-      .catch(e => {
-        console.log('error fetching countries', e);
-      })
-    axios.get('https://29vk13ch1a.execute-api.us-east-2.amazonaws.com/Prod/cities/').then(response => {
-        setCities(formatLocations(response.data, 'city'))
-      })
-      .catch(e => {
-        console.log('error fetching cities', e)
-      })
     refreshCharts();
   }, []);
 
@@ -93,12 +73,21 @@ const HomePage = () => {
   };
 
   const loadOptions = (inputValue, callback) => {
-    _.delay((q) => {
-      if (!q) {
+    // _.delay((q) => {
+      if (!inputValue) {
         return callback([]);
       }
-      callback(locations.filter(l => l.label.toLowerCase().contains(searchText.toLowerCase())));
-    }, 600, inputValue);
+      // debugger
+      let items;
+      if (locationType === 'cities') {
+        items = formatLocations(cities, 'city');
+      } else if (locationType === 'states') {
+        items = formatLocations(states, 'state');
+      } else {
+        items = formatLocations(countries, 'country');
+      }
+      callback(items.filter(l => l.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1));
+    // }, 600, inputValue);
   }
 
   const handleLocationInputChange = (newValue) => {
@@ -135,7 +124,7 @@ const HomePage = () => {
             </div>
             <div className='col-md'>
               <select className='form-control' onChange={onLocationTypeChange}>
-                <option value='city'>City</option>
+                <option value='city'>County</option>
                 <option value='state'>State</option>
                 <option value='country'>Country</option>
               </select>
@@ -153,6 +142,9 @@ const HomePage = () => {
                 loadOptions={loadOptions}
                 onInputChange={handleLocationInputChange}
                 onChange={onLocationChange}/>
+              {/* <Select
+                options={locations}
+              /> */}
             </div>
           </div>
         </div>
@@ -286,4 +278,15 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+function mapStateToProps({ api }) {
+  return {
+    loading: api.loading,
+    cities: api.cities,
+    states: api.states,
+    countries: api.countries
+  }
+}
+
+export default connect(
+  mapStateToProps
+)(HomePage);
