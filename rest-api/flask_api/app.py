@@ -37,8 +37,8 @@ def connect_to_db():
 @app.route('/countries/')
 def fetch_countries():
     sql = """
-        SELECT DISTINCT location_id, country 
-        FROM location_dim 
+        SELECT DISTINCT location_id, country
+        FROM location_dim
         WHERE state IS NULL
             AND city IS NULL ORDER BY country;
         """
@@ -47,24 +47,6 @@ def fetch_countries():
     cursor.execute(sql)
     countries = [dict(row) for row in cursor.fetchall()]
     return jsonify(countries)
-
-
-def to_float(data, key):
-    val = data.get(key, None)
-    if val:
-        val = float(val)
-    return val
-
-
-def normalize_datatypes(data):
-    dc = dict(data)
-    dc['cases_100k'] = to_float(dc, 'cases_100k')
-    dc['testing_rate'] = to_float(dc, 'testing_rate')
-    dc['hospitalization_rate'] = to_float(dc, 'hospitalization_rate')
-    dc['latitude'] = to_float(dc, 'latitude')
-    dc['longitude'] = to_float(dc, 'longitude')
-
-    return dc
 
 
 @app.route('/countries/<int:country_id>/')
@@ -93,7 +75,7 @@ def fetch_states():
     db = connect_to_db()
     cursor = db.cursor(cursor_factory=extras.DictCursor)
     cursor.execute(sql)
-    states = [dict(row) for row in cursor.fetchall()]
+    states = [dict(row) for row in cursor.fetchall() if row.get('state')]
     return jsonify(states)
 
 
@@ -122,7 +104,7 @@ def fetch_cities():
     db = connect_to_db()
     cursor = db.cursor(cursor_factory=extras.DictCursor)
     cursor.execute(sql)
-    cities = [dict(row) for row in cursor.fetchall()]
+    cities = [dict(row) for row in cursor.fetchall() if row.get('city')]
     return jsonify(cities)
 
 
@@ -141,3 +123,21 @@ def fetch_city(city_id):
     cursor.execute(sql, (city_id, ))
     days = [normalize_datatypes(row) for row in cursor.fetchall()]
     return jsonify(days)
+
+
+def to_float(data, key):
+    val = data.get(key, None)
+    if val:
+        val = float(val)
+    return val
+
+
+def normalize_datatypes(data):
+    dc = dict(data)
+    dc['cases_100k'] = to_float(dc, 'cases_100k')
+    dc['testing_rate'] = to_float(dc, 'testing_rate')
+    dc['hospitalization_rate'] = to_float(dc, 'hospitalization_rate')
+    dc['latitude'] = to_float(dc, 'latitude')
+    dc['longitude'] = to_float(dc, 'longitude')
+
+    return dc
