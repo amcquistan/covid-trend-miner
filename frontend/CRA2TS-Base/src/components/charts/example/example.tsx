@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import * as echarts from 'echarts';
+import styles from './example.module.css';
 
 export interface IExampleChart {
     chart: string;
@@ -15,7 +16,7 @@ const ExampleChart = () => {
 
         chart.setOption({
             title: {
-                text: 'ECharts entry example'
+                text: 'Example Bar Chart With Hooks'
             },
             tooltip: {},
             xAxis: {
@@ -43,6 +44,7 @@ const ExampleChart = () => {
     
     return (
         <div
+            className={styles['chart-container']}
             ref={myChart}
             style={{
                 width: "800px",
@@ -52,6 +54,7 @@ const ExampleChart = () => {
     );
 };
 
+//  The echarts init function will not allow nullables.  This returns an empty div until the hook gets a ref
 function emptyDiv(): any {
     return (<div></div>);
 }

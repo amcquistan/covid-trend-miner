@@ -5,14 +5,14 @@ import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import App from './App';
 //import { loadToDoList } from './actions';
-import toDoApp from './reducers';
+import COVIDMiner from './reducers';
 import rootSaga from './sagas/index';
 import { BrowserRouter } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 
 const sagaMiddleware = createSagaMiddleware();
 
-const store = createStore(toDoApp, applyMiddleware(sagaMiddleware));
+const store = createStore(COVIDMiner, applyMiddleware(sagaMiddleware));
 
 sagaMiddleware.run(rootSaga);
 
