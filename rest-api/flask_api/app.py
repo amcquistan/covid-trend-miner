@@ -9,7 +9,7 @@ from psycopg2 import extras
 from flask_cors import CORS
 
 app = FlaskLambda(__name__)
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+CORS(app, resources={r"*": {"origins": "*"}})
 
 
 def connect_to_db():
