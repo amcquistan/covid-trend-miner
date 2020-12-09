@@ -1,11 +1,15 @@
-import {  }  from './countries'
+import { watchFetchCountries, watchFetchCountryDetail }  from './countries'
 import { watchFetchStates, watchFetchStateDetail } from './states'
-import {  } from './cities'
+import { watchFetchCities, watchFetchCityDetail } from './cities'
 import { all } from 'redux-saga/effects'
 
 const allSagas = [
+    watchFetchCountries,
+    watchFetchCountryDetail,
     watchFetchStates,
-    watchFetchStateDetail
+    watchFetchStateDetail,
+    watchFetchCities,
+    watchFetchCityDetail
 ]
 
 export function* appSagas() {

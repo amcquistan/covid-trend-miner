@@ -9,13 +9,13 @@ export function* watchFetchStates() {
 
 export function* fetchStates() {
   try {
-      const response = yield call(fetchStateData);
-      const responseData = response.data;
+    const response = yield call(fetchStateData);
+    const responseData = response.data;
 
-      yield put({ type: types.FETCH_STATES_SUCCESS, responseData })
+    yield put({ type: types.FETCH_STATES_SUCCESS, responseData })
   } catch(e) {
-      console.log(e)
-      yield put({ type: types.FETCH_STATES_FAIL, e })
+    console.log(e)
+    yield put({ type: types.FETCH_STATES_FAIL, e })
   }
 }
 
@@ -25,12 +25,12 @@ export function* watchFetchStateDetail() {
 
 export function* fetchStateDetail(action) {
   try {
-      const response = yield call(fetchStateDetailData, action.arg);
-      const responseData = response.data;
+    const response = yield call(fetchStateDetailData, action.arg);
+    const responseData = response.data;
 
-      yield put({ type: types.FETCH_STATE_SUCCESS, responseData })
+    yield put({ type: types.FETCH_STATE_SUCCESS, responseData })
   } catch(e) {
-      console.log(e)
-      yield put({ type: types.FETCH_STATE_FAIL, e })
+    console.log(e)
+    yield put({ type: types.FETCH_STATE_FAIL, e })
   }
 }

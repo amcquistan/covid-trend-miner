@@ -25,7 +25,7 @@ const store = createStore(rootReducer, composeEnhancers(applyMiddleware(sagaMidd
 sagaMiddleware.run(appSagas);
 export const action = (type, arg) => store.dispatch({ type, arg })
 
-action('FETCH_STATE', 60) // example state detail action dispatch
+action('FETCH_CITY', 535) // example action dispatch
 
 ReactDOM.render(
   <Provider store={store}>
