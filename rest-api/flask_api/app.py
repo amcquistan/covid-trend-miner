@@ -49,24 +49,6 @@ def fetch_countries():
     return jsonify(countries)
 
 
-def to_float(data, key):
-    val = data.get(key, None)
-    if val:
-        val = float(val)
-    return val
-
-
-def normalize_datatypes(data):
-    dc = dict(data)
-    dc['cases_100k'] = to_float(dc, 'cases_100k')
-    dc['testing_rate'] = to_float(dc, 'testing_rate')
-    dc['hospitalization_rate'] = to_float(dc, 'hospitalization_rate')
-    dc['latitude'] = to_float(dc, 'latitude')
-    dc['longitude'] = to_float(dc, 'longitude')
-
-    return dc
-
-
 @app.route('/countries/<int:country_id>/')
 def fetch_country(country_id):
     sql = """
@@ -143,3 +125,21 @@ def fetch_city(city_id):
     cursor.execute(sql, (city_id, ))
     days = [normalize_datatypes(row) for row in cursor.fetchall()]
     return jsonify(days)
+
+
+def to_float(data, key):
+    val = data.get(key, None)
+    if val:
+        val = float(val)
+    return val
+
+
+def normalize_datatypes(data):
+    dc = dict(data)
+    dc['cases_100k'] = to_float(dc, 'cases_100k')
+    dc['testing_rate'] = to_float(dc, 'testing_rate')
+    dc['hospitalization_rate'] = to_float(dc, 'hospitalization_rate')
+    dc['latitude'] = to_float(dc, 'latitude')
+    dc['longitude'] = to_float(dc, 'longitude')
+
+    return dc
