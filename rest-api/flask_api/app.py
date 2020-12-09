@@ -37,8 +37,8 @@ def connect_to_db():
 @app.route('/countries/')
 def fetch_countries():
     sql = """
-        SELECT DISTINCT location_id, country 
-        FROM location_dim 
+        SELECT DISTINCT location_id, country
+        FROM location_dim
         WHERE state IS NULL
             AND city IS NULL ORDER BY country;
         """
@@ -94,7 +94,8 @@ def fetch_states():
     cursor = db.cursor(cursor_factory=extras.DictCursor)
     cursor.execute(sql)
     states = [dict(row) for row in cursor.fetchall()]
-    return jsonify(states)
+    cleaned_states = [x for x in states if not (x.get('state') is None)] #remove null states
+    return jsonify(cleaned_states)
 
 
 @app.route('/states/<int:state_id>/')
@@ -123,7 +124,8 @@ def fetch_cities():
     cursor = db.cursor(cursor_factory=extras.DictCursor)
     cursor.execute(sql)
     cities = [dict(row) for row in cursor.fetchall()]
-    return jsonify(cities)
+    cleaned_cities = [x for x in cities if not (x.get('city') is None)] #remove null cities
+    return jsonify(cleaned_cities)
 
 
 @app.route('/cities/<int:city_id>/')
