@@ -1,15 +1,21 @@
 
 import {
+  FETCH_COUNTRIES,
   FETCH_COUNTRIES_SUCCESS,
   FETCH_COUNTRIES_FAIL,
+  FETCH_COUNTRY,
   FETCH_COUNTRY_SUCCESS,
   FETCH_COUNTRY_FAIL,
+  FETCH_STATES,
   FETCH_STATES_SUCCESS,
   FETCH_STATES_FAIL,
+  FETCH_STATE,
   FETCH_STATE_SUCCESS,
   FETCH_STATE_FAIL,
+  FETCH_CITIES,
   FETCH_CITIES_SUCCESS,
   FETCH_CITIES_FAIL,
+  FETCH_CITY,
   FETCH_CITY_SUCCESS,
   FETCH_CITY_FAIL,
 } from '../actions/types'
@@ -22,6 +28,7 @@ function initState() {
     stateDetail: [],
     cities: [],
     cityDetail: [],
+    loading: false,
     fetchCountriesErrorMessage: '',
     fetchCountryErrorMessage: '',
     fetchStatesErrorMessage: '',
@@ -31,9 +38,10 @@ function initState() {
   };
 }
 
-function updateState(key, value, oldState = null) {
-  const newState = oldState ? { ...oldState } : initState();
-  newState[key] = value;
+function updateState(updateVals, oldState = null) {
+  let newState = oldState ? { ...oldState } : initState();
+  // newState[key] = value;
+  newState = { ...newState, ...updateVals }
   return newState;
 }
 
@@ -45,33 +53,44 @@ export default function(state = initialState, action) {
 
   switch(action.type) {
     // Country
+    case FETCH_COUNTRIES:
+      return updateState({loading: true})
     case FETCH_COUNTRIES_SUCCESS:
-      return updateState('countries', action.responseData)
+      return updateState({countries: action.responseData, loading: false}, state)
     case FETCH_COUNTRIES_FAIL:
-      return updateState('fetchCountriesErrorMessage', action.error.message)
+      return updateState({fetchCountriesErrorMessage: action.error.message, loading: false}, state)
+    case FETCH_COUNTRY:
+      return updateState({loading: true}, state)
     case FETCH_COUNTRY_SUCCESS:
-      return updateState('countryDetail', action.responseData)
+      return updateState({countryDetail: action.responseData, loading: false}, state)
     case FETCH_COUNTRY_FAIL:
-      return updateState('fetchCountryErrorMessage', action.error.message)
+      return updateState({fetchCountryErrorMessage: action.error.message, loading: false}, state)
     // State
+    case FETCH_STATES:
+      return updateState({loading: true}, state)
     case FETCH_STATES_SUCCESS:
-      console.log('reducing state data', action.responseData)
-      return updateState('states', action.responseData)
+      return updateState({states: action.responseData, loading: false}, state)
     case FETCH_STATES_FAIL:
-      return updateState('fetchStatesErrorMessage', action.error.message)
+      return updateState({fetchStatesErrorMessage: action.error.message, loading: false}, state)
+    case FETCH_STATE:
+      return updateState({loading: true}, state)
     case FETCH_STATE_SUCCESS:
-      return updateState('stateDetail', action.responseData)
+      return updateState({stateDetail: action.responseData, loading: false}, state)
     case FETCH_STATE_FAIL:
-      return updateState('fetchStateErrorMessage', action.error.message)
+      return updateState({fetchStateErrorMessage: action.error.message, loading: false}, state)
     // City
+    case FETCH_CITIES:
+      return updateState({loading: true}, state)
     case FETCH_CITIES_SUCCESS:
-      return updateState('cities', action.responseData)
+      return updateState({cities: action.responseData, loading: false}, state)
     case FETCH_CITIES_FAIL:
-      return updateState('fetchCitiesErrorMessage', action.error.message)
+      return updateState({fetchCitiesErrorMessage: action.error.message, loading: false}, state)
+    case FETCH_CITY:
+      return updateState({loading: true}, state)
     case FETCH_CITY_SUCCESS:
-      return updateState('city', action.responseData)
+      return updateState({cityDetail: action.responseData, loading: false}, state)
     case FETCH_CITY_FAIL:
-      return updateState('fetchCityErrorMessage', action.error.message)
+      return updateState({fetchCityErrorMessage: action.error.message, loading: false}, state)
     default:
       return state;
   }
