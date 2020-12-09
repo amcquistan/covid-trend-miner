@@ -9,6 +9,7 @@ const initialState = {
 export default function (state = initialState, action: any) {
     switch (action.type) {
         case FETCH_COUNTRIES_SUCCESS:
+            //  action.payload is defined in the root saga at present.
             const newState = { ...state, countries: action.payload };
             return newState;
         default:
