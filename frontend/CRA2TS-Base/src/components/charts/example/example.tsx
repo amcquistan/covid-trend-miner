@@ -45,11 +45,7 @@ const ExampleChart = () => {
     return (
         <div
             className={styles['chart-container']}
-            ref={myChart}
-            style={{
-                width: "800px",
-                height: "300px",
-            }}>
+            ref={myChart}>
         </div>
     );
 };
