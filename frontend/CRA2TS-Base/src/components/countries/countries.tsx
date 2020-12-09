@@ -1,21 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, connect } from 'react-redux';
 import styles from './countries.module.css';
 import Button from 'react-bootstrap/Button';
-import { XHR } from '../../services/xhr/XHR';
-import ICountries from '../../components/countries/ICountries';
+import { FETCH_COUNTRIES } from '../../redux/actions';
 
-const xhr = XHR.getInstance();
-
-const getCountries = () => xhr.DoGetCountries();
-
-const CountriesGrid = () => {
-
-    const [countries, setCountries] = useState(xhr.Countries);
+const CountriesGrid = ({ countries = [{country: "test", location_id: 5}] }: any) => {
+    
+    const dispatch = useDispatch();
 
     const getCountriesControl = () => {
-        getCountries().then(() => {
-            setCountries(xhr.Countries);
-        });
+        dispatch({ type: FETCH_COUNTRIES });
     }
     
     return (
@@ -46,4 +40,8 @@ const CountriesGrid = () => {
     );
 };
 
-export default CountriesGrid;
+const mapStateToProps = state => {
+    const { countries } = state;
+    return { countries };
+};
+export default connect(mapStateToProps)(CountriesGrid);

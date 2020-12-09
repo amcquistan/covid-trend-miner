@@ -2,9 +2,6 @@
 import ICountries, { initialState } from '../../components/countries/ICountries';
 import { COUNTRIES_URL } from '../../env';
 
-console.log(`Node Environment:  ${process.env.NODE_ENV}`);
-console.log(`Listings URL:  ${COUNTRIES_URL}`);
-
 export class XHR {
 
     private static instance: XHR;

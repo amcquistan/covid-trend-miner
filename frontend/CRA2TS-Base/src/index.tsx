@@ -1,28 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import createSagaMiddleware from 'redux-saga';
+import store from './redux/store';
 import App from './App';
-//import { loadToDoList } from './actions';
-import COVIDMiner from './redux/reducers';
-import rootSaga from './sagas/index';
-import { BrowserRouter } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
-
-const sagaMiddleware = createSagaMiddleware();
-
-const store = createStore(COVIDMiner, applyMiddleware(sagaMiddleware));
-
-sagaMiddleware.run(rootSaga);
-
-store.dispatch({ type: 'GET_COUNTRIES' })
 
 render(
     <Provider store={store}>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
+        <App />
     </Provider>,
     document.getElementById('root')
 );
