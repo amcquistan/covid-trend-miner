@@ -11,7 +11,7 @@ export function* fetchCountries() {
   try {
     const response = yield call(fetchCountryData);
     const responseData = response.data;
-    console.log('fetch crountries saga ', responseData)
+    console.log('fetch countries saga ', responseData)
 
     yield put({ type: types.FETCH_COUNTRIES_SUCCESS, responseData })
   } catch(e) {

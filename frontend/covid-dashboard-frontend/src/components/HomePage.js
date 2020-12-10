@@ -12,6 +12,7 @@ import ReactEcharts from 'echarts-for-react';
 
 import { action } from '../index';
 import * as types from '../redux/actions/types';
+import { MetricCard } from './MetricCard/MetricCard';
 
 
 const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, countryDetail}) => {
@@ -117,24 +118,34 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
   const refreshCharts = () => {
     const locData = locationData();
 
-    console.log('locData in refresh charts: ', locData)
-
     if (loading || _.isEmpty(locData)) {
       clearChartData();
       return;
     }
 
-    // probably makes decent sense to filter by date here
     const filteredData = locData.filter(item => {
       const date = DateTime.fromHTTP(item.date);
       return date >= start && date <= end;
+    });
+
+    let totals = filteredData.reduce((prev, curr) => {
+      return {
+        cases: prev.cases + (curr.cases ? curr.cases : 0),
+        recoveries: prev.recoveries + (curr.recoveries ? curr.recoveries : 0),
+        deaths: prev.deaths + (curr.deaths ? curr.deaths : 0),
+        testing_rate: prev.testing_rate + (curr.testing_rate ? curr.testing_rate : 0),
+      }
     })
 
     setCasesOptions(chartableData('cases', filteredData));
     setDeathsOptions(chartableData('deaths', filteredData));
     setRecoveriesOptions(chartableData('recoveries', filteredData));
-    setHospitalizationRateOptions(chartableData('hospitalization_rate', filteredData));
     setTestingRateOptions(chartableData('testing_rate', filteredData));
+
+    setCasesTotal(totals.cases);
+    setRecoveriesTotal(totals.recoveries);
+    setDeathsTotal(totals.deaths);
+    setTestingRate((totals.testing_rate / filteredData.length).toFixed(2));
   };
 
   const loadOptions = (inputValue, callback) => {
@@ -260,115 +271,77 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
 
       <div className='section my-5'>
         <div className='row'>
-          <div className='col mb-4'>
-            <div className='card'>
-              <div className='card-body'>
-                <h5 className='card-title'>Cases</h5>
-                <h5 className='card-subtitle text-muted'>(cummulative)</h5>
-                <h2 className='my-5 display-2'>{casesTotal}</h2>
-              </div>
-            </div>
-          </div>
+          {casesTotal > 0 &&
+            <MetricCard upperText='Cases' lowerText='(cumulative)' metric={casesTotal} />
+          }
 
-          <div className='col mb-4'>
-            <div className='card'>
-              <div className='card-body'>
-                <h5 className='card-title'>Tests</h5>
-                <h5 className='card-subtitle text-muted'>(cummulative)</h5>
-                <h2 className='my-5 display-2'>{recoveriesTotal}</h2>
-              </div>
-            </div>
-          </div>
+          {recoveriesTotal > 0 &&
+            <MetricCard upperText='Recoveries' lowerText='(cummulative)' metric={recoveriesTotal} />
+          }
 
-          <div className='col mb-4'>
-            <div className='card'>
-              <div className='card-body'>
-                <h5 className='card-title'>Deaths</h5>
-                <h5 className='card-subtitle text-muted'>(cummulative)</h5>
-                <h2 className='my-5 display-2'>{deathsTotal}</h2>
-              </div>
-            </div>
-          </div>
+          {deathsTotal > 0 &&
+            <MetricCard upperText='Deaths' lowerText='(cummulative)' metric={deathsTotal} />
+          }
 
-          <div className='col mb-4'>
-            <div className='card'>
-              <div className='card-body'>
-                <h5 className='card-title'>Hospitalizations</h5>
-                <h5 className='card-subtitle text-muted'>(rate)</h5>
-                <h2 className='my-5 display-2'>{hospitalizationRate}</h2>
-              </div>
-            </div>
-          </div>
-
-          <div className='col mb-4'>
-            <div className='card'>
-              <div className='card-body'>
-                <h5 className='card-title'>Testing</h5>
-                <h5 className='card-subtitle text-muted'>(rate)</h5>
-                <h2 className='my-5 display-2'>{testingRate}</h2>
-              </div>
-            </div>
-          </div>
-
+          {testingRate > 0 &&
+            <MetricCard upperText='Testing' lowerText='(rate)' metric={testingRate} />
+          }
         </div>
       </div>
 
       <div className='section my-5'>
-        <div className='chart-container'>
-          <h4 className='text-left'>Cases</h4>
-          {/* maybe vertically center these? */}
-          <div style={{height: chartContainerHeight}}>
-            {
-              _.isEmpty(casesOptions)
-                ? (renderNoData())
-                : (<ReactEcharts option={casesOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
-            }
+        {casesTotal > 0 &&
+          <div className='chart-container'>
+            <h4 className='text-left'>Cases</h4>
+            {/* maybe vertically center these? */}
+            <div style={{height: chartContainerHeight}}>
+              {
+                _.isEmpty(casesOptions)
+                  ? (renderNoData())
+                  : (<ReactEcharts option={casesOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
+              }
+            </div>
           </div>
-        </div>
+        }
 
-        <div className='chart-container'>
-          <h4 className='text-left'>Deaths</h4>
-          <div style={{height: chartContainerHeight}}>
-            {
-              _.isEmpty(casesOptions)
-                ? (renderNoData())
-                : (<ReactEcharts option={deathsOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
-            }
+        {deathsTotal > 0 &&
+          <div className='chart-container'>
+            <h4 className='text-left'>Deaths</h4>
+            <div style={{height: chartContainerHeight}}>
+              {
+                _.isEmpty(casesOptions)
+                  ? (renderNoData())
+                  : (<ReactEcharts option={deathsOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
+              }
+            </div>
           </div>
-        </div>
+        }
 
-        <div className='chart-container'>
-          <h4 className='text-left'>Recoveries</h4>
-          <div style={{height: chartContainerHeight}}>
-            {
-              _.isEmpty(casesOptions)
-                ? (renderNoData())
-                : (<ReactEcharts option={recoveriesOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
-            }
+        {recoveriesTotal > 0 &&
+          <div className='chart-container'>
+            <h4 className='text-left'>Recoveries</h4>
+            <div style={{height: chartContainerHeight}}>
+              {
+                _.isEmpty(casesOptions)
+                  ? (renderNoData())
+                  : (<ReactEcharts option={recoveriesOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
+              }
+            </div>
           </div>
-        </div>
+        }
 
-        <div className='chart-container'>
-          <h4 className='text-left'>Hopsitalization Rate</h4>
-          <div style={{height: chartContainerHeight}}>
-            {
-              _.isEmpty(casesOptions)
-                ? (renderNoData())
-                : (<ReactEcharts option={hospitalizationRateOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
-            }
+        {testingRate > 0 &&
+          <div className='chart-container'>
+            <h4 className='text-left'>Testing Rate</h4>
+            <div style={{height: chartContainerHeight}}>
+              {
+                _.isEmpty(casesOptions)
+                  ? (renderNoData())
+                  : (<ReactEcharts option={testingRateOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
+              }
+            </div>
           </div>
-        </div>
-
-        <div className='chart-container'>
-          <h4 className='text-left'>Testing Rate</h4>
-          <div style={{height: chartContainerHeight}}>
-            {
-              _.isEmpty(casesOptions)
-                ? (renderNoData())
-                : (<ReactEcharts option={testingRateOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
-            }
-          </div>
-        </div>
+        }
       </div>
 
     </div>
