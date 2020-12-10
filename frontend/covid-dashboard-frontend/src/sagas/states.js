@@ -3,7 +3,6 @@ import { fetchStateData,  fetchStateDetailData} from '../redux/actions/apiAction
 import * as types from '../redux/actions/types'
 
 export function* watchFetchStates() {
-  // yield call(fetchStates)
   yield takeLatest(types.FETCH_STATES, fetchStates);
 }
 
