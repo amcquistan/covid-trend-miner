@@ -20,7 +20,7 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
 
   const [searchText, setSearchText] = useState('');
   const [location, setLocation] = useState({});
-  const [locationType, setLocationType] = useState('city');
+  const [locationType, setLocationType] = useState('state');
 
   const [casesTotal, setCasesTotal] = useState(0);
   const [recoveriesTotal, setRecoveriesTotal] = useState(0);
@@ -137,12 +137,28 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
     setTestingRateOptions(chartableData('testing_rate', filteredData));
   };
 
+    const getUserLocation = () => {
+      // TODO put key behind env var
+        fetch('https://api.ipgeolocation.io/ipgeo?apiKey=6b67c6d12c4240bdb163fd5d3486bc7f').then(response => {
+        return response.json();
+        }).then((res) => {
+            const userStateName = res.state_prov;
+            console.log("API CALL: ", res)
+            const userState = states.find(item => item.state.toLowerCase() === userStateName.toLowerCase())
+            console.log("Filter result ", userState)
+            // Figure out how to set the default state
+            // setLocation(userStateName)
+            // makeLocationLabel(userStateName, STATE_LOCATION)
+        }).catch((err) => console.error('Problem fetching Location Info: ', err))
+    }
+
+
   const loadOptions = (inputValue, callback) => {
+    getUserLocation();
     _.delay((txt) => {
       if (!txt) {
         return callback([]);
       }
-      // debugger
       let items;
       if (locationType === CITY_LOCATION) {
         items = formatLocations(cities, CITY_LOCATION);
@@ -214,7 +230,7 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
   return (
     <div className='container'>
       <div className='section my-5'>
-        <h1 className='my-4'>Build Test Covid Trend Miner</h1>
+        <h1 className='my-4'>Covid Trend Miner</h1>
         <div>
           <div className='form-group row'>
             <div className='col-md-2 col-form-label'>
@@ -236,6 +252,7 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
             <div className='col-md'>
               <AsyncSelect
                 cacheOptions
+                defaultValue={location}
                 defaultOptions
                 loadOptions={loadOptions}
                 onInputChange={handleLocationInputChange}
