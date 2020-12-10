@@ -13,6 +13,7 @@ import ReactEcharts from 'echarts-for-react';
 
 import { action } from '../index';
 import * as types from '../redux/actions/types';
+import { MetricCard } from './MetricCard/MetricCard';
 
 import ChartsContainer from './common/ChartsContainer';
 import { calcTrend } from "../utils";
@@ -131,22 +132,34 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
       return;
     }
 
-    // probably makes decent sense to filter by date here
     const filteredData = locData.filter(item => {
       const date = DateTime.fromHTTP(item.date);
       return date >= start && date <= end;
+    });
+
+    let totals = filteredData.reduce((prev, curr) => {
+      return {
+        cases: prev.cases + (curr.cases ? curr.cases : 0),
+        recoveries: prev.recoveries + (curr.recoveries ? curr.recoveries : 0),
+        deaths: prev.deaths + (curr.deaths ? curr.deaths : 0),
+        testing_rate: prev.testing_rate + (curr.testing_rate ? curr.testing_rate : 0),
+      }
     })
 
     setCasesOptions(chartableData('cases', filteredData));
     setDeathsOptions(chartableData('deaths', filteredData));
     setRecoveriesOptions(chartableData('recoveries', filteredData));
-    setHospitalizationRateOptions(chartableData('hospitalization_rate', filteredData));
     setTestingRateOptions(chartableData('testing_rate', filteredData));
 
     setCasesTrendOptions(makeTrendData('cases', filteredData));
     setRecoveriesTrendOptions(makeTrendData('recoveries', filteredData));
     setDeathsTrendOptions(makeTrendData('deaths', filteredData));
     setTestingTrendOptions(makeTrendData('testing_rate', filteredData));
+    
+    setCasesTotal(totals.cases);
+    setRecoveriesTotal(totals.recoveries);
+    setDeathsTotal(totals.deaths);
+    setTestingRate((totals.testing_rate / filteredData.length).toFixed(2));
   };
 
   const makeTrendData = (key, data) => {
@@ -323,56 +336,21 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
 
       <div className='section my-5'>
         <div className='row'>
-          <div className='col mb-4'>
-            <div className='card'>
-              <div className='card-body'>
-                <h5 className='card-title'>Cases</h5>
-                <h5 className='card-subtitle text-muted'>(cummulative)</h5>
-                <h2 className='my-5 display-2'>{casesTotal}</h2>
-              </div>
-            </div>
-          </div>
+          {casesTotal > 0 &&
+            <MetricCard upperText='Cases' lowerText='(cumulative)' metric={casesTotal} />
+          }
 
-          <div className='col mb-4'>
-            <div className='card'>
-              <div className='card-body'>
-                <h5 className='card-title'>Tests</h5>
-                <h5 className='card-subtitle text-muted'>(cummulative)</h5>
-                <h2 className='my-5 display-2'>{recoveriesTotal}</h2>
-              </div>
-            </div>
-          </div>
+          {recoveriesTotal > 0 &&
+            <MetricCard upperText='Recoveries' lowerText='(cummulative)' metric={recoveriesTotal} />
+          }
 
-          <div className='col mb-4'>
-            <div className='card'>
-              <div className='card-body'>
-                <h5 className='card-title'>Deaths</h5>
-                <h5 className='card-subtitle text-muted'>(cummulative)</h5>
-                <h2 className='my-5 display-2'>{deathsTotal}</h2>
-              </div>
-            </div>
-          </div>
+          {deathsTotal > 0 &&
+            <MetricCard upperText='Deaths' lowerText='(cummulative)' metric={deathsTotal} />
+          }
 
-          <div className='col mb-4'>
-            <div className='card'>
-              <div className='card-body'>
-                <h5 className='card-title'>Hospitalizations</h5>
-                <h5 className='card-subtitle text-muted'>(rate)</h5>
-                <h2 className='my-5 display-2'>{hospitalizationRate}</h2>
-              </div>
-            </div>
-          </div>
-
-          <div className='col mb-4'>
-            <div className='card'>
-              <div className='card-body'>
-                <h5 className='card-title'>Testing</h5>
-                <h5 className='card-subtitle text-muted'>(rate)</h5>
-                <h2 className='my-5 display-2'>{testingRate}</h2>
-              </div>
-            </div>
-          </div>
-
+          {testingRate > 0 &&
+            <MetricCard upperText='Testing' lowerText='(rate)' metric={testingRate} />
+          }
         </div>
       </div>
 
