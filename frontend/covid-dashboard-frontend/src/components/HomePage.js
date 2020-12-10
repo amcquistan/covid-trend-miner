@@ -13,6 +13,9 @@ import ReactEcharts from 'echarts-for-react';
 import { action } from '../index';
 import * as types from '../redux/actions/types';
 
+import ChartsContainer from './common/ChartsContainer';
+import { calcTrend } from "../utils";
+
 
 const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, countryDetail}) => {
   const [start, setStart] = useState(DateTime.fromObject({year: 2020, month: 1, day: 20}));
@@ -33,6 +36,11 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
   const [deathsOptions, setDeathsOptions] = useState({});
   const [hospitalizationRateOptions, setHospitalizationRateOptions] = useState({});
   const [testingRateOptions, setTestingRateOptions] = useState({});
+
+  const [casesTrendOptions, setCasesTrendOptions] = useState({});
+  const [recoveriesTrendOptions, setRecoveriesTrendOptions] = useState({});
+  const [deathsTrendOptions, setDeathsTrendOptions] = useState({});
+  const [testingTrendOptions, setTestingTrendOptions] = useState({});
   const [isReady, setIsReady] = useState(false);
 
   const chartContainerHeight = '375px';
@@ -130,7 +138,59 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
     setRecoveriesOptions(chartableData('recoveries', filteredData));
     setHospitalizationRateOptions(chartableData('hospitalization_rate', filteredData));
     setTestingRateOptions(chartableData('testing_rate', filteredData));
+
+    setCasesTrendOptions(makeTrendData('cases', filteredData));
+    setRecoveriesTrendOptions(makeTrendData('recoveries', filteredData));
+    setDeathsTrendOptions(makeTrendData('deaths', filteredData));
+    setTestingTrendOptions(makeTrendData('testing_rate', filteredData));
   };
+
+  const makeTrendData = (key, data) => {
+    const nth = data.length - 1;
+    const n3th = nth - 3 >= 0 ? nth - 3 : 0;
+    const n5th = nth - 5 >= 0 ? nth - 5 : 0;
+    const n10th = nth - 10 >= 0 ? nth - 10 : 0;
+
+    const nthValue = data[nth][key]
+    
+    const n3thTrend = calcTrend(data[n3th][key], nthValue);
+    const n5thTrend = calcTrend(data[n5th][key], nthValue);
+    const n10thTrend = calcTrend(data[n10th][key], nthValue);
+
+    const formatter = '{value}%'
+    const option = {
+      toolbox: {
+        show: true,
+        feature: {
+          saveAsImage: { title: 'Save As Image' },
+          dataView: { readOnly: false, title: 'Data', lang: ['', 'Close', 'Refresh'] }
+        }
+      },
+      series: [
+        // {
+        //   name: '3 Day Trend',
+        //   type: 'gauge',
+        //   detail: { formatter },
+        //   data: [{value: n3thTrend, name: '3 Day Trend'}]
+        // },
+        {
+          name: '5 Day Trend',
+          min: -20,
+          max: 30,
+          type: 'gauge',
+          detail: { formatter },
+          data: [{value: n5thTrend, name: '5 Day Trend'}]
+        }
+        // ,{
+        //   name: '10 Day Trend',
+        //   type: 'gauge',
+        //   detail: { formatter },
+        //   data: [{value: n10thTrend, name: '10 Day Trend'}]
+        // }
+      ]
+    };
+    return option;
+  }
 
   const loadOptions = (inputValue, callback) => {
     _.delay((txt) => {
@@ -161,6 +221,12 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
     setRecoveriesOptions({});
     setHospitalizationRateOptions({});
     setTestingRateOptions({});
+
+    setCasesTrendOptions({});
+    setDeathsTrendOptions({});
+    setRecoveriesTrendOptions({});
+    setTestingTrendOptions({});
+    
   };
 
   const onLocationChange = async (value) => {
@@ -200,10 +266,6 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
   const handleEndChange = (evt) => {
     setEnd(DateTime.fromISO(evt.date.toISOString()));
     refreshCharts();
-  };
-
-  const renderNoData = () => {
-    return (<p>No Data Available</p>);
   };
 
   return (
@@ -309,61 +371,30 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
       </div>
 
       <div className='section my-5'>
-        <div className='chart-container'>
-          <h4 className='text-left'>Cases</h4>
-          {/* maybe vertically center these? */}
-          <div style={{height: chartContainerHeight}}>
-            {
-              _.isEmpty(casesOptions)
-                ? (renderNoData())
-                : (<ReactEcharts option={casesOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
-            }
-          </div>
-        </div>
+        <ChartsContainer
+          title='Cases'
+          lineOptions={casesOptions}
+          gaugeOptions={casesTrendOptions}/>
 
-        <div className='chart-container'>
-          <h4 className='text-left'>Deaths</h4>
-          <div style={{height: chartContainerHeight}}>
-            {
-              _.isEmpty(casesOptions)
-                ? (renderNoData())
-                : (<ReactEcharts option={deathsOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
-            }
-          </div>
-        </div>
+        <ChartsContainer
+          title='Deaths'
+          lineOptions={deathsOptions}
+          gaugeOptions={deathsTrendOptions}/>
 
-        <div className='chart-container'>
-          <h4 className='text-left'>Recoveries</h4>
-          <div style={{height: chartContainerHeight}}>
-            {
-              _.isEmpty(casesOptions)
-                ? (renderNoData())
-                : (<ReactEcharts option={recoveriesOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
-            }
-          </div>
-        </div>
+        <ChartsContainer
+          title='Recoveries'
+          lineOptions={recoveriesOptions}
+          gaugeOptions={recoveriesTrendOptions}/>
 
-        <div className='chart-container'>
-          <h4 className='text-left'>Hopsitalization Rate</h4>
-          <div style={{height: chartContainerHeight}}>
-            {
-              _.isEmpty(casesOptions)
-                ? (renderNoData())
-                : (<ReactEcharts option={hospitalizationRateOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
-            }
-          </div>
-        </div>
+        <ChartsContainer
+          title='Hopsitalization Rate'
+          lineOptions={hospitalizationRateOptions}
+          gaugeOptions={{}}/>
 
-        <div className='chart-container'>
-          <h4 className='text-left'>Testing Rate</h4>
-          <div style={{height: chartContainerHeight}}>
-            {
-              _.isEmpty(casesOptions)
-                ? (renderNoData())
-                : (<ReactEcharts option={testingRateOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
-            }
-          </div>
-        </div>
+        <ChartsContainer
+          title='Testing Rate'
+          lineOptions={testingRateOptions}
+          gaugeOptions={testingTrendOptions}/>
       </div>
 
     </div>
