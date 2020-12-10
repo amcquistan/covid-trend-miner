@@ -70,7 +70,7 @@ def fetch_country(country_id):
 @app.route('/states/')
 def fetch_states():
     sql = """
-        SELECT DISTINCT location_id, state FROM location_dim WHERE city IS NULL ORDER BY state;
+        SELECT DISTINCT location_id, state, country FROM location_dim WHERE city IS NULL ORDER BY state, country;
         """
     db = connect_to_db()
     cursor = db.cursor(cursor_factory=extras.DictCursor)
@@ -99,12 +99,15 @@ def fetch_state(state_id):
 @app.route('/cities/')
 def fetch_cities():
     sql = """
-        SELECT DISTINCT location_id, city FROM location_dim ORDER BY city;
+        SELECT DISTINCT location_id, city, state, country 
+        FROM location_dim 
+        WHERE city IS NOT NULL AND state IS NOT NULL AND country IS NOT NULL
+        ORDER BY city, state, country;
         """
     db = connect_to_db()
     cursor = db.cursor(cursor_factory=extras.DictCursor)
     cursor.execute(sql)
-    cities = [dict(row) for row in cursor.fetchall() if row.get('city')]
+    cities = [dict(row) for row in cursor.fetchall()]
     return jsonify(cities)
 
 
@@ -139,5 +142,5 @@ def normalize_datatypes(data):
     dc['hospitalization_rate'] = to_float(dc, 'hospitalization_rate')
     dc['latitude'] = to_float(dc, 'latitude')
     dc['longitude'] = to_float(dc, 'longitude')
-
+    
     return dc
