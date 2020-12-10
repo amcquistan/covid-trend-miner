@@ -6,7 +6,6 @@ import { DatePicker } from "react-tempusdominus-bootstrap";
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import AsyncSelect from 'react-select/async';
-import axios from 'axios';
 import { connect } from 'react-redux';
 
 import ReactEcharts from 'echarts-for-react';
@@ -16,12 +15,11 @@ import * as types from '../redux/actions/types';
 
 
 const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, countryDetail}) => {
-  const [start, setStart] = useState(DateTime.local().minus({months: 3}));
+  const [start, setStart] = useState(DateTime.fromObject({year: 2020, month: 1, day: 20}));
   const [end, setEnd] = useState(DateTime.local().endOf('day'));
 
   const [searchText, setSearchText] = useState('');
   const [location, setLocation] = useState({});
-  const [locations, setLocations] = useState([]);
   const [locationType, setLocationType] = useState('city');
 
   const [casesTotal, setCasesTotal] = useState(0);
@@ -37,108 +35,119 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
   const [testingRateOptions, setTestingRateOptions] = useState({});
   const [isReady, setIsReady] = useState(false);
 
+  const chartContainerHeight = '375px';
 
+  const CITY_LOCATION = 'city';
+  const STATE_LOCATION = 'state';
+  const COUNTRY_LOCATION = 'country';
 
   useEffect(() => {
     refreshCharts();
-  }, []);
+  }, [cityDetail, stateDetail, countryDetail, loading]);
 
-  const formatLocations = (items, key) => {
-    return items.map(item => {
-      return { ...item, value: item.location_id, label: item[key] };
-    });
-  }
-
-  const makeDummyData = () => {
-    return {
-      xAxis: {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-      },
-      yAxis: {
-          type: 'value'
-      },
-      series: [{
-          data: [820, 932, 901, 934, 1290, 1330, 1320],
-          type: 'line'
-      }]
-    };
-  };
-
-  const commonToolBox = () => {
-    return {
-      feature: {
-        saveAsImage: { title: 'Save As Image' },
-        dataView: { readOnly: false, title: 'Data', lang: ['', 'Close', 'Refresh'] }
-      }
+  const makeLocationLabel = (item, loc) => {
+    switch(loc) {
+      case CITY_LOCATION: return `${item.city}, ${item.state}, ${item.country}`;
+      case STATE_LOCATION: return `${item.state}, ${item.country}`;
+      case COUNTRY_LOCATION: return item.country;
     }
   }
 
-  const makeData = (type, data, startDate, endDate) => {
-    const series = {
+  const formatLocations = (items, loc) => {
+    return items.map(item => {
+      return { ...item, value: item.location_id, label: makeLocationLabel(item, loc) };
+    });
+  }
+
+  const chartableData = (type, data) => {
+    const series = [{
       name: type,
       type: 'line',
-      data: data.map(item => item[type])
-    };
+      data: data.map(item => {
+        return [DateTime.fromHTTP(item.date).toISODate(), item[type]]
+      })
+    }];
 
     const xAxis = {
-      type: 'category',
-      data: data.map(item => item.date)
+      type: 'time',
+      splitLine: { show: false }
     }
 
     const yAxis = {
       type: 'value'
     }
 
+    const dataZoom = [{
+      type: 'slider',
+      xAxisIndex: 0,
+      filterMode: 'empty'
+    }]
+
     const option = {
-      toolbox: commonToolBox(),
+      toolbox: {
+        feature: {
+          saveAsImage: { title: 'Save As Image' },
+          dataView: { readOnly: false, title: 'Data', lang: ['', 'Close', 'Refresh'] }
+        }
+      },
       tooltip: {
         trigger: 'item',
-        formatter: (params) => `Date: ${params.name}<br>Name: ${params.seriesName}<br>Total: ${params.data}`
+        formatter: (params) => `Name: ${_.startCase(params.seriesName)}<br>Date: ${params.data[0]}<br>Total: ${params.data[1]}`
       },
+      dataZoom,
       xAxis,
       yAxis,
-      series: [series]
+      series
     }
-
     return option;
   }
 
-  const chartableData = () => {
-    if (locationType === 'city') {
-      return cityDetail;
-    } else if (locationType === 'state') {
-      return stateDetail;
+  const locationData = () => {
+    let data;
+    if (locationType === CITY_LOCATION) {
+      data = cityDetail;
+    } else if (locationType === STATE_LOCATION) {
+      data = stateDetail;
+    } else if (locationType === COUNTRY_LOCATION) {
+      data = countryDetail;
     }
-    return countryDetail;
+    return data;
   }
 
   const refreshCharts = () => {
-    setIsReady(false);
-    setCasesOptions(makeData('cases', chartableData(), start, end));
-    setDeathsOptions(makeData('deaths', chartableData(), start, end));
-    setRecoveriesOptions(makeData('recoveries', chartableData(), start, end));
-    setHospitalizationRateOptions(makeData('hospitalization_rate', chartableData(), start, end));
-    setTestingRateOptions(makeData('testing_rate', chartableData(), start, end));
-    setIsReady(true);
+    const locData = locationData();
+
+    if (loading || _.isEmpty(locData)) {
+      clearChartData();
+      return;
+    }
+
+    // probably makes decent sense to filter by date here
+    const filteredData = locData.filter(item => true)
+
+    setCasesOptions(chartableData('cases', filteredData));
+    setDeathsOptions(chartableData('deaths', filteredData));
+    setRecoveriesOptions(chartableData('recoveries', filteredData));
+    setHospitalizationRateOptions(chartableData('hospitalization_rate', filteredData));
+    setTestingRateOptions(chartableData('testing_rate', filteredData));
   };
 
   const loadOptions = (inputValue, callback) => {
-    // _.delay((q) => {
-      if (!inputValue) {
+    _.delay((txt) => {
+      if (!txt) {
         return callback([]);
       }
       // debugger
       let items;
-      if (locationType === 'city') {
-        items = formatLocations(cities, 'city');
-      } else if (locationType === 'state') {
-        items = formatLocations(states, 'state');
+      if (locationType === CITY_LOCATION) {
+        items = formatLocations(cities, CITY_LOCATION);
+      } else if (locationType === STATE_LOCATION) {
+        items = formatLocations(states, STATE_LOCATION);
       } else {
-        items = formatLocations(countries, 'country');
+        items = formatLocations(countries, COUNTRY_LOCATION);
       }
-      callback(items.filter(l => l.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1));
-    // }, 600, inputValue);
+      callback(items.filter(l => l.label.toLowerCase().includes(txt.toLowerCase())));
+    }, 200, inputValue);
   }
 
   const handleLocationInputChange = (newValue) => {
@@ -146,46 +155,65 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
     return newValue;
   }
 
-  const onLocationChange = (value) => {
-    console.log(value)
+  const clearChartData = () => {
+    setCasesOptions({});
+    setDeathsOptions({});
+    setRecoveriesOptions({});
+    setHospitalizationRateOptions({});
+    setTestingRateOptions({});
+  };
+
+  const onLocationChange = async (value) => {
     setLocation(value);
 
     if (_.isEmpty(value)) {
+      clearChartData();
       return;
     }
 
-    if (locationType === 'city') {
-      action(types.FETCH_CITY, value.location_id);
-    } else if (locationType === 'state') {
-      action(types.FETCH_STATE, value.location_id);
-    } else {
-      action(types.FETCH_COUNTRY, value.location_id);
+    try {
+      if (locationType === CITY_LOCATION) {
+        await action(types.FETCH_CITY, value.location_id);
+      } else if (locationType === STATE_LOCATION) {
+        await action(types.FETCH_STATE, value.location_id);
+      } else {
+        await action(types.FETCH_COUNTRY, value.location_id);
+      }
+      refreshCharts()
+    } catch(e) {
+      console.log('Uh oh ... something funny happened', e)
     }
   }
 
   const onLocationTypeChange = (evt) => {
     setLocationType(evt.target.value);
+    setLocation(null);
+    clearChartData();
+    refreshCharts();
   }
 
   const handleStartChange = (evt) => {
-    console.log('handleStartChange happened', evt);
     setStart(DateTime.fromISO(evt.date.toISOString()));
+    refreshCharts();
   };
 
   const handleEndChange = (evt) => {
-    console.log('handleEndChange', evt);
     setEnd(DateTime.fromISO(evt.date.toISOString()));
+    refreshCharts();
   };
 
+  const renderNoData = () => {
+    return (<p>No Data Available</p>);
+  };
 
-  return isReady && (
+  return (
     <div className='container'>
       <div className='section my-5'>
         <h1 className='my-4'>Covid Trend Miner</h1>
         <div>
           <div className='form-group row'>
             <div className='col-md-2 col-form-label'>
-              <label>Location Type</label>
+              <label>Granularity</label>
             </div>
             <div className='col-md'>
               <select className='form-control' value={locationType} onChange={onLocationTypeChange}>
@@ -208,9 +236,6 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
                 onInputChange={handleLocationInputChange}
                 onChange={onLocationChange}
                 isClearable={true}/>
-              {/* <Select
-                options={locations}
-              /> */}
             </div>
           </div>
         </div>
@@ -285,55 +310,56 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
 
       <div className='section my-5'>
         <div className='chart-container'>
-          <h4>Cases</h4>
-          <div>
+          <h4 className='text-left'>Cases</h4>
+          {/* maybe vertically center these? */}
+          <div style={{height: chartContainerHeight}}>
             {
               _.isEmpty(casesOptions)
-                ? (<p>Loading ...</p>)
+                ? (renderNoData())
                 : (<ReactEcharts option={casesOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
             }
           </div>
         </div>
 
         <div className='chart-container'>
-          <h4>Deaths</h4>
-          <div>
+          <h4 className='text-left'>Deaths</h4>
+          <div style={{height: chartContainerHeight}}>
             {
               _.isEmpty(casesOptions)
-                ? (<p>Loading ...</p>)
+                ? (renderNoData())
                 : (<ReactEcharts option={deathsOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
             }
           </div>
         </div>
 
         <div className='chart-container'>
-          <h4>Recoveries</h4>
-          <div>
+          <h4 className='text-left'>Recoveries</h4>
+          <div style={{height: chartContainerHeight}}>
             {
               _.isEmpty(casesOptions)
-                ? (<p>Loading ...</p>)
+                ? (renderNoData())
                 : (<ReactEcharts option={recoveriesOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
             }
           </div>
         </div>
 
         <div className='chart-container'>
-          <h4>Hopsitalization Rate</h4>
-          <div>
+          <h4 className='text-left'>Hopsitalization Rate</h4>
+          <div style={{height: chartContainerHeight}}>
             {
               _.isEmpty(casesOptions)
-                ? (<p>Loading ...</p>)
+                ? (renderNoData())
                 : (<ReactEcharts option={hospitalizationRateOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
             }
           </div>
         </div>
 
         <div className='chart-container'>
-          <h4>Testing Rate</h4>
-          <div>
+          <h4 className='text-left'>Testing Rate</h4>
+          <div style={{height: chartContainerHeight}}>
             {
               _.isEmpty(casesOptions)
-                ? (<p>Loading ...</p>)
+                ? (renderNoData())
                 : (<ReactEcharts option={testingRateOptions} className='react_for_echarts' style={{height: '350px', width: '100%'}}/>)
             }
           </div>
