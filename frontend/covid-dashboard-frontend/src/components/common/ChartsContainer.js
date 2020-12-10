@@ -30,7 +30,6 @@ const ChartsContainer = ({ lineOptions, gaugeOptions, title }) => {
       </div>
     </div>
   );
-
 };
 
 ChartsContainer.propTypes = {
