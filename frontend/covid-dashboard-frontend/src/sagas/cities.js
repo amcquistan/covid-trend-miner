@@ -3,7 +3,7 @@ import { fetchCityData,  fetchCityDetailData} from '../redux/actions/apiActions'
 import * as types from '../redux/actions/types'
 
 export function* watchFetchCities() {
-  yield call(fetchCities)
+  // yield call(fetchCities)
   yield takeLatest(types.FETCH_CITIES, fetchCities);
 }
 

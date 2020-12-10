@@ -3,7 +3,7 @@ import { fetchCountryData,  fetchCountryDetailData} from '../redux/actions/apiAc
 import * as types from '../redux/actions/types'
 
 export function* watchFetchCountries() {
-  yield call(fetchCountries)
+  // yield call(fetchCountries)
   yield takeLatest(types.FETCH_COUNTRIES, fetchCountries);
 }
 
