@@ -9,7 +9,7 @@ phases:
   build:
     commands:
       - echo building and deploying started on `date`
-      - npm run build
+      - cd frontend/covid-dashboard-frontend && npm run deploy
 
 artifacts:
   files:
