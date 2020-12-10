@@ -43,7 +43,7 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
 
   useEffect(() => {
     refreshCharts();
-  }, [cityDetail, stateDetail, countryDetail, loading]);
+  }, [cityDetail, stateDetail, countryDetail, loading, start, end]);
 
   const makeLocationLabel = (item, loc) => {
     switch(loc) {
@@ -117,13 +117,18 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
   const refreshCharts = () => {
     const locData = locationData();
 
+    console.log('locData in refresh charts: ', locData)
+
     if (loading || _.isEmpty(locData)) {
       clearChartData();
       return;
     }
 
     // probably makes decent sense to filter by date here
-    const filteredData = locData.filter(item => true)
+    const filteredData = locData.filter(item => {
+      const date = DateTime.fromHTTP(item.date);
+      return date >= start && date <= end;
+    })
 
     setCasesOptions(chartableData('cases', filteredData));
     setDeathsOptions(chartableData('deaths', filteredData));
@@ -194,12 +199,12 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
 
   const handleStartChange = (evt) => {
     setStart(DateTime.fromISO(evt.date.toISOString()));
-    refreshCharts();
+    // refreshCharts();
   };
 
   const handleEndChange = (evt) => {
     setEnd(DateTime.fromISO(evt.date.toISOString()));
-    refreshCharts();
+    // refreshCharts();
   };
 
   const renderNoData = () => {

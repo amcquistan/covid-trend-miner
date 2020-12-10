@@ -49,7 +49,6 @@ const initialState = initState()
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default function(state = initialState, action) {
-  console.log('apiReducer action', action)
 
   switch(action.type) {
     // Country
