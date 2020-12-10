@@ -276,7 +276,7 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
   return (
     <div className='container'>
       <div className='section my-5'>
-        <h1 className='my-4'>Build Test Covid Trend Miner</h1>
+        <h1 className='my-4'>Covid Trend Miner</h1>
         <div>
           <div className='form-group row'>
             <div className='col-md-2 col-form-label'>
