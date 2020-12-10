@@ -7,6 +7,7 @@ import { DateTime } from 'luxon';
 import _ from 'lodash';
 import AsyncSelect from 'react-select/async';
 import { connect } from 'react-redux';
+import Loader from 'react-loader';
 
 import ReactEcharts from 'echarts-for-react';
 
@@ -124,8 +125,6 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
 
   const refreshCharts = () => {
     const locData = locationData();
-
-    console.log('locData in refresh charts: ', locData)
 
     if (loading || _.isEmpty(locData)) {
       clearChartData();
@@ -307,6 +306,8 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
           </div>
         </div>
       </div>
+
+      <Loader loaded={!loading}></Loader>
 
       <div className='section my-5'>
         <div className='row'>
