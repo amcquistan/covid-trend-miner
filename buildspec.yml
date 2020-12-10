@@ -1,0 +1,17 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo Installing NPM deps
+      - cd frontend/covid-dashboard-frontend && npm install
+
+  build:
+    commands:
+      - echo building and deploying started on `date`
+      - npm run build
+
+artifacts:
+  files:
+    - '**/*'
+  base-directory: build
