@@ -16,6 +16,7 @@ import createSagaMiddleware from 'redux-saga';
 
 import { appSagas } from './sagas';
 import rootReducer from './redux/reducers';
+import * as types from './redux/actions/types'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ 
                               || compose; // add support for Redux dev tools
@@ -24,9 +25,10 @@ const sagaMiddleware = createSagaMiddleware();
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(sagaMiddleware)));
 sagaMiddleware.run(appSagas);
 export const action = (type, arg) => store.dispatch({ type, arg })
-action('FETCH_COUNTRY', 4) // example action dispatch
-action('FETCH_STATE', 60) // example action dispatch
-action('FETCH_CITY', 535) // example action dispatch
+
+action(types.FETCH_COUNTRIES)
+action(types.FETCH_STATES)
+action(types.FETCH_CITIES)
 
 ReactDOM.render(
   <Provider store={store}>

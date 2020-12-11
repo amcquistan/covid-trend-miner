@@ -18,6 +18,8 @@ import {
   FETCH_CITY,
   FETCH_CITY_SUCCESS,
   FETCH_CITY_FAIL,
+  LOADING_START,
+  LOADING_DONE
 } from '../actions/types'
 
 function initState() {
@@ -49,7 +51,6 @@ const initialState = initState()
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default function(state = initialState, action) {
-  console.log('apiReducer action', action)
 
   switch(action.type) {
     // Country
@@ -58,39 +59,39 @@ export default function(state = initialState, action) {
     case FETCH_COUNTRIES_SUCCESS:
       return updateState({countries: action.responseData, loading: false}, state)
     case FETCH_COUNTRIES_FAIL:
-      return updateState({fetchCountriesErrorMessage: action.error.message, loading: false}, state)
+      return updateState({fetchCountriesErrorMessage: action.error, loading: false}, state)
     case FETCH_COUNTRY:
       return updateState({loading: true}, state)
     case FETCH_COUNTRY_SUCCESS:
       return updateState({countryDetail: action.responseData, loading: false}, state)
     case FETCH_COUNTRY_FAIL:
-      return updateState({fetchCountryErrorMessage: action.error.message, loading: false}, state)
+      return updateState({fetchCountryErrorMessage: action.error, loading: false}, state)
     // State
     case FETCH_STATES:
       return updateState({loading: true}, state)
     case FETCH_STATES_SUCCESS:
       return updateState({states: action.responseData, loading: false}, state)
     case FETCH_STATES_FAIL:
-      return updateState({fetchStatesErrorMessage: action.error.message, loading: false}, state)
+      return updateState({fetchStatesErrorMessage: action.error, loading: false}, state)
     case FETCH_STATE:
       return updateState({loading: true}, state)
     case FETCH_STATE_SUCCESS:
       return updateState({stateDetail: action.responseData, loading: false}, state)
     case FETCH_STATE_FAIL:
-      return updateState({fetchStateErrorMessage: action.error.message, loading: false}, state)
+      return updateState({fetchStateErrorMessage: action.error, loading: false}, state)
     // City
     case FETCH_CITIES:
       return updateState({loading: true}, state)
     case FETCH_CITIES_SUCCESS:
       return updateState({cities: action.responseData, loading: false}, state)
     case FETCH_CITIES_FAIL:
-      return updateState({fetchCitiesErrorMessage: action.error.message, loading: false}, state)
+      return updateState({fetchCitiesErrorMessage: action.error, loading: false}, state)
     case FETCH_CITY:
       return updateState({loading: true}, state)
     case FETCH_CITY_SUCCESS:
       return updateState({cityDetail: action.responseData, loading: false}, state)
     case FETCH_CITY_FAIL:
-      return updateState({fetchCityErrorMessage: action.error.message, loading: false}, state)
+      return updateState({fetchCityErrorMessage: action.error, loading: false}, state)
     default:
       return state;
   }
