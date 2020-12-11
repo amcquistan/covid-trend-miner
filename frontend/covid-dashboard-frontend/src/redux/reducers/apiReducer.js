@@ -70,7 +70,7 @@ export default function(state = initialState, action) {
     case FETCH_COUNTRY_FAIL:
       return updateState({fetchCountryErrorMessage: action.error, loading: false}, state)
     case CLEAR_COUNTRY:
-      return updateState({countryDetail: {}})
+      return updateState({countryDetail: {}}, state)
     // State
     case FETCH_STATES:
       return updateState({loading: true}, state)
