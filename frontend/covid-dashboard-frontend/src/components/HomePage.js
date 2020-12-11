@@ -14,12 +14,9 @@ import ReactEcharts from 'echarts-for-react';
 import { action } from '../index';
 import * as types from '../redux/actions/types';
 import { MetricCard } from './MetricCard/MetricCard';
-<<<<<<< HEAD
 
 import ChartsContainer from './common/ChartsContainer';
 import { calcTrend } from "../utils";
-=======
->>>>>>> 77d19c686b8ffbc4c74b62108c6024c6520bd40b
 
 
 const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, countryDetail}) => {
@@ -358,30 +355,33 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
       </div>
 
       <div className='section my-5'>
-        <ChartsContainer
-          title='Cases'
-          lineOptions={casesOptions}
-          gaugeOptions={casesTrendOptions}/>
+        {casesTotal > 0 &&
+          <ChartsContainer
+            title='Cases'
+            lineOptions={casesOptions}
+            gaugeOptions={casesTrendOptions}/>
+        }
 
-        <ChartsContainer
-          title='Deaths'
-          lineOptions={deathsOptions}
-          gaugeOptions={deathsTrendOptions}/>
+        {deathsTotal > 0 &&
+          <ChartsContainer
+            title='Deaths'
+            lineOptions={deathsOptions}
+            gaugeOptions={deathsTrendOptions}/>
+        }
 
-        <ChartsContainer
-          title='Recoveries'
-          lineOptions={recoveriesOptions}
-          gaugeOptions={recoveriesTrendOptions}/>
+        {recoveriesTotal > 0 &&
+          <ChartsContainer
+            title='Recoveries'
+            lineOptions={recoveriesOptions}
+            gaugeOptions={recoveriesTrendOptions}/>
+        }
 
-        <ChartsContainer
-          title='Hopsitalization Rate'
-          lineOptions={hospitalizationRateOptions}
-          gaugeOptions={{}}/>
-
-        <ChartsContainer
-          title='Testing Rate'
-          lineOptions={testingRateOptions}
-          gaugeOptions={testingTrendOptions}/>
+        {testingRate > 0 &&
+          <ChartsContainer
+            title='Testing Rate'
+            lineOptions={testingRateOptions}
+            gaugeOptions={testingTrendOptions}/>
+        }
       </div>
 
     </div>
