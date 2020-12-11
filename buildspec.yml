@@ -10,8 +10,3 @@ phases:
     commands:
       - echo building and deploying started on `date`
       - npm run deploy
-
-artifacts:
-  files:
-    - '**/*'
-  base-directory: build
