@@ -137,14 +137,8 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
       return date >= start && date <= end;
     });
 
-    let totals = filteredData.reduce((prev, curr) => {
-      return {
-        cases: prev.cases + (curr.cases ? curr.cases : 0),
-        recoveries: prev.recoveries + (curr.recoveries ? curr.recoveries : 0),
-        deaths: prev.deaths + (curr.deaths ? curr.deaths : 0),
-        testing_rate: prev.testing_rate + (curr.testing_rate ? curr.testing_rate : 0),
-      }
-    })
+    const initalTotals = filteredData[0];
+    const mostRecentTotals = filteredData[filteredData.length - 1];
 
     setCasesOptions(chartableData('cases', filteredData));
     setDeathsOptions(chartableData('deaths', filteredData));
@@ -156,10 +150,10 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
     setDeathsTrendOptions(makeTrendData('deaths', filteredData));
     setTestingTrendOptions(makeTrendData('testing_rate', filteredData));
     
-    setCasesTotal(totals.cases);
-    setRecoveriesTotal(totals.recoveries);
-    setDeathsTotal(totals.deaths);
-    setTestingRate((totals.testing_rate / filteredData.length).toFixed(2));
+    setCasesTotal(mostRecentTotals.cases - initalTotals.cases);
+    setRecoveriesTotal(mostRecentTotals.recoveries - initalTotals.recoveries);
+    setDeathsTotal(mostRecentTotals.deaths - initalTotals.deaths);
+    setTestingRate((mostRecentTotals.testing_rate).toFixed(2));
   };
 
   const makeTrendData = (key, data) => {
