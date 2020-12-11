@@ -14,9 +14,12 @@ import ReactEcharts from 'echarts-for-react';
 import { action } from '../index';
 import * as types from '../redux/actions/types';
 import { MetricCard } from './MetricCard/MetricCard';
+<<<<<<< HEAD
 
 import ChartsContainer from './common/ChartsContainer';
 import { calcTrend } from "../utils";
+=======
+>>>>>>> 77d19c686b8ffbc4c74b62108c6024c6520bd40b
 
 
 const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, countryDetail}) => {
