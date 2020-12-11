@@ -19,7 +19,10 @@ import {
   FETCH_CITY_SUCCESS,
   FETCH_CITY_FAIL,
   LOADING_START,
-  LOADING_DONE
+  LOADING_DONE,
+  CLEAR_CITY,
+  CLEAR_STATE,
+  CLEAR_COUNTRY
 } from '../actions/types'
 
 function initState() {
@@ -66,6 +69,8 @@ export default function(state = initialState, action) {
       return updateState({countryDetail: action.responseData, loading: false}, state)
     case FETCH_COUNTRY_FAIL:
       return updateState({fetchCountryErrorMessage: action.error, loading: false}, state)
+    case CLEAR_COUNTRY:
+      return updateState({countryDetail: {}}, state)
     // State
     case FETCH_STATES:
       return updateState({loading: true}, state)
@@ -79,6 +84,8 @@ export default function(state = initialState, action) {
       return updateState({stateDetail: action.responseData, loading: false}, state)
     case FETCH_STATE_FAIL:
       return updateState({fetchStateErrorMessage: action.error, loading: false}, state)
+    case CLEAR_STATE:
+      return updateState({stateDetail: {}}, state)
     // City
     case FETCH_CITIES:
       return updateState({loading: true}, state)
@@ -92,6 +99,8 @@ export default function(state = initialState, action) {
       return updateState({cityDetail: action.responseData, loading: false}, state)
     case FETCH_CITY_FAIL:
       return updateState({fetchCityErrorMessage: action.error, loading: false}, state)
+    case CLEAR_CITY:
+      return updateState({cityDetail: {}}, state)
     default:
       return state;
   }

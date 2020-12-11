@@ -53,7 +53,7 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
 
   useEffect(() => {
     refreshCharts();
-  }, [cityDetail, stateDetail, countryDetail, loading, start, end]);
+  }, [loading, start, end]);
 
   const makeLocationLabel = (item, loc) => {
     switch(loc) {
@@ -153,7 +153,7 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
     setCasesTotal(mostRecentTotals.cases - initalTotals.cases);
     setRecoveriesTotal(mostRecentTotals.recoveries - initalTotals.recoveries);
     setDeathsTotal(mostRecentTotals.deaths - initalTotals.deaths);
-    setTestingRate((mostRecentTotals.testing_rate).toFixed(2));
+    setTestingRate(mostRecentTotals.testingRate ? (mostRecentTotals.testing_rate).toFixed(2) : 0);
   };
 
   const makeTrendData = (key, data) => {
@@ -226,7 +226,7 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
     return newValue;
   }
 
-  const clearChartData = () => {
+  const clearChartData = async () => {
     setCasesOptions({});
     setDeathsOptions({});
     setRecoveriesOptions({});
@@ -237,7 +237,20 @@ const HomePage = ({cities, states, countries, loading, cityDetail, stateDetail, 
     setDeathsTrendOptions({});
     setRecoveriesTrendOptions({});
     setTestingTrendOptions({});
-    
+
+    if (locationType === CITY_LOCATION) {
+      await action(types.CLEAR_CITY)
+    } else if (locationType === STATE_LOCATION) {
+      await action(types.CLEAR_STATE)
+    } else {
+      await action(types.CLEAR_COUNTRY)
+    }
+
+    setCasesTotal(0);
+    setRecoveriesTotal(0);
+    setDeathsTotal(0);
+    setTestingRate(0);
+
   };
 
   const onLocationChange = async (value) => {
