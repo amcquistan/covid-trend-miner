@@ -37,8 +37,8 @@ def connect_to_db():
 @app.route('/countries/')
 def fetch_countries():
     sql = """
-        SELECT DISTINCT location_id, country 
-        FROM location_dim 
+        SELECT DISTINCT location_id, country
+        FROM location_dim
         WHERE state IS NULL
             AND city IS NULL ORDER BY country;
         """
@@ -139,5 +139,25 @@ def fetch_city(city_id):
     db = connect_to_db()
     cursor = db.cursor(cursor_factory=extras.DictCursor)
     cursor.execute(sql, (city_id, ))
+    days = [normalize_datatypes(row) for row in cursor.fetchall()]
+    return jsonify(days)
+
+
+@app.route('/prediction/<int:location_id>')
+def fetch_prediction_data(location_id):
+    # placeholder query since my understanding is we need to update db columns/tables
+    # to include the regions described in the predictive model
+    sql = """
+        SELECT DISTINCT f.date_id, f.location_id, cases, recoveries, deaths,
+        cases_100k, testing_rate, hospitalization_rate,
+        date, year, month, day_of_week, day_of_month,
+        country, state, city, latitude, longitude, population
+        FROM covid_facts f JOIN date_dim d ON d.date_id = f.date_id
+        JOIN location_dim l ON l.location_id = f.location_id
+        WHERE f.location_id = %s;
+        """
+    db = connect_to_db()
+    cursor = db.cursor(cursor_factory=extras.DictCursor)
+    cursor.execute(sql, (location_id, ))
     days = [normalize_datatypes(row) for row in cursor.fetchall()]
     return jsonify(days)
