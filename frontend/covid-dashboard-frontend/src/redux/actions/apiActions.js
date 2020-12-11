@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // should probably set this as an env var
-const apiUrl = 'https://29vk13ch1a.execute-api.us-east-2.amazonaws.com/Prod';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 export function fetchCountryData() {
     return axios({
