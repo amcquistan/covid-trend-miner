@@ -157,7 +157,7 @@ def fetch_prediction_data(location_id):
         country, state, city, latitude, longitude, population
         FROM covid_facts f JOIN date_dim d ON d.date_id = f.date_id
         JOIN location_dim l ON l.location_id = f.location_id
-        WHERE f.location_id = %s;
+        WHERE f.location_id = %s ORDER BY date LIMIT 15;
         """
     db = connect_to_db()
     cursor = db.cursor(cursor_factory=extras.DictCursor)
