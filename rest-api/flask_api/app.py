@@ -99,8 +99,8 @@ def fetch_state(state_id):
 @app.route('/cities/')
 def fetch_cities():
     sql = """
-        SELECT DISTINCT location_id, city, state, country
-        FROM location_dim
+        SELECT DISTINCT location_id, city, state, country 
+        FROM location_dim 
         WHERE city IS NOT NULL AND state IS NOT NULL AND country IS NOT NULL
         ORDER BY city, state, country;
         """
@@ -142,10 +142,10 @@ def normalize_datatypes(data):
     dc['hospitalization_rate'] = to_float(dc, 'hospitalization_rate')
     dc['latitude'] = to_float(dc, 'latitude')
     dc['longitude'] = to_float(dc, 'longitude')
-
+    
     return dc
 
-
+    
 @app.route('/prediction/<int:location_id>')
 def fetch_prediction_data(location_id):
     # placeholder query since my understanding is we need to update db columns/tables
